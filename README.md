@@ -3,5 +3,9 @@ Helm charts for running lava nodes
 
 ## Provider
 
-See [/provider/README.md](/provider/README.md)
+See [/charts/provider/README.md](/charts/provider/README.md)
 
+
+## RPC
+
+See [/charts/rpc/README.md](/charts/rpc/README.md)

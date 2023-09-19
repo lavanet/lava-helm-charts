@@ -23,11 +23,11 @@ Please see the [secret.example.yaml](secret.example.yaml) file for an example.
 #### Required Config
 To run the Helm chart you need to provider some `REQUIRED` values. Anything marked at required in the [values.yaml](values.yaml) file is required.
 
-Please see [examples/values.example.yaml](examples/values.example.yaml) file for an example for what values you will need to provide.
+Please see [/examples/provider/values.example.yaml](/examples/provider/values.example.yaml) file for an example for what values you will need to provide.
 
 Please see our [docs](https://docs.lavanet.xyz/provider-setup) for more information on configuration. 
 
-The `configYaml` section in the [examples/values.example.yaml](examples/values.example.yaml) file has an example config for a provider that works on `LAV1`
+The `configYaml` section in the [/examples/provider/values.example.yaml](/examples/provider/values.example.yaml) file has an example config for a provider that works on `LAV1`
 
 
 ## 2. Create a staking transaction for the provider
