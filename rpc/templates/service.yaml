@@ -1,0 +1,35 @@
+---
+{{- $serviceName := include "rpc.fullname" .  -}}
+{{- if .Values.service.name -}}
+{{- $serviceName = .Values.service.name -}}
+{{- end -}}
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+  labels:
+    lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}
+    lavanet.xyz/node_type: "rpc"
+    {{- include "rpc.labels" . | nindent 4 }}
+spec:
+  type:  {{ .Values.service.type }}
+  {{- with .Values.service.ports }}
+  ports:
+    {{- toYaml . | nindent 4 }}
+  {{ else }}
+  ports:
+    - name: {{ .Values.port.name }}
+      port: {{ .Values.port.number }}
+      protocol: {{ .Values.port.protocol }}
+      targetPort: {{ .Values.port.name }}
+  {{- end }}
+  selector:
+    lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}
+    lavanet.xyz/node_type: "rpc"
+    {{- include "rpc.selectorLabels" . | nindent 4 }}
+{{- end }}

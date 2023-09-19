@@ -3,11 +3,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "provider.fullname"  . }}
+  name: {{ include "rpc.fullname"  . }}
   labels:
-    {{- include "provider.labels" . | nindent 4 }}
-    lavanet.xyz/node_moniker:  {{ include "provider.moniker"  . }}    
-    lavanet.xyz/node_type: "provider"
+    {{- include "rpc.labels" . | nindent 4 }}
+    lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
+    lavanet.xyz/node_type: "rpc"
   annotations:
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
