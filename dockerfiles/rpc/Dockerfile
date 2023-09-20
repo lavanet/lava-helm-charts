@@ -1,3 +1,8 @@
+FROM alpine:latest
+ARG TAG
+ENV TAG=$TAG
+RUN [ -z "$TAG" ] && echo "TAG is required (ex: v0.22.0)" && exit 1 || true
+
 ###############################################################################
 ################################## BUILDER ####################################
 ###############################################################################
@@ -6,10 +11,11 @@ FROM ubuntu as builder
 RUN apt-get update && apt-get install -y curl git build-essential
 
 ARG TAG
+ENV TAG=$TAG
 WORKDIR app
 
 # download lavad binary
-RUN curl -L "https://github.com/lavanet/lava/releases/download/v${TAG}/lavad-v${TAG}-linux-amd64" > /app/lavad
+RUN curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavad-${TAG}-linux-amd64" > /app/lavad
 RUN chmod +x /app/lavad
 
 # download genesis.json file
