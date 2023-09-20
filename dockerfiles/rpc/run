@@ -14,9 +14,9 @@ fi
 
 # check that genesis.json exists in DATA_DIR if not copy it
 if [ ! -f "$DATA_DIR/config/genesis.json" ]; then
-  echo "genesis.json not found in DATA_DIR, copying from /app/data/genesis.json"
+  echo "config files not found, copying over"
   mkdir -p $DATA_DIR/config
-  cp /app/data/genesis.json $DATA_DIR/config/genesis.json
+  cp /app/data/config/* $DATA_DIR/config/
 fi
 
 echo "Running RPC node"
