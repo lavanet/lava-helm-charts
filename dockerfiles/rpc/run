@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# check that DATA_DIR env is set, if not exit
+if [ -z "$DATA_DIR" ]; then
+  echo "DATA_DIR env not set, exiting"
+  exit 1
+fi
+
+# check that SEED_NODES env is set, if not exit 
+if [ -z "$SEED_NODES" ]; then
+  echo "SEED_NODES env not set, exiting"
+  exit 1
+fi
+
+# check that genesis.json exists in DATA_DIR if not copy it
+if [ ! -f "$DATA_DIR/genesis.json" ]; then
+  echo "genesis.json not found in DATA_DIR, copying from /app/data/genesis.json"
+  cp /app/data/genesis.json $DATA_DIR/genesis.json
+fi
+
+echo "Running RPC node"
+lavad start --home=$DATA_DIR --p2p.seeds $SEED_NODES
