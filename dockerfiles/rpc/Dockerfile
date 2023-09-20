@@ -1,8 +1,3 @@
-FROM alpine:latest
-ARG TAG
-ENV TAG=$TAG
-RUN [ -z "$TAG" ] && echo "TAG is required (ex: v0.22.0)" && exit 1 || true
-
 ###############################################################################
 ################################## BUILDER ####################################
 ###############################################################################
@@ -11,7 +6,8 @@ FROM ubuntu as builder
 RUN apt-get update && apt-get install -y curl git build-essential
 
 ARG TAG
-ENV TAG=$TAG
+RUN [ -z "$TAG" ] && echo "TAG is required (ex: v0.22.0)" && exit 1 || true
+
 WORKDIR app
 
 # download lavad binary
