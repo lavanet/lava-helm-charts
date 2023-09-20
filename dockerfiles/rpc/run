@@ -16,6 +16,8 @@ fi
 if [ ! -f "$DATA_DIR/genesis.json" ]; then
   echo "genesis.json not found in DATA_DIR, copying from /app/data/genesis.json"
   mkdir -p $DATA_DIR/config
+
+  lavad init --home=$DATA_DIR
   cp /app/data/genesis.json $DATA_DIR/config/genesis.json
 fi
 
