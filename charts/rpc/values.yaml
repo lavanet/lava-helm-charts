@@ -14,6 +14,12 @@ replicasCount: 1
 # chain id of lava
 chainId: "lava-testnet-2"
 
+# set the directory to mount the data volume to
+dataDir: "/data"
+
+# set the volume storage size
+storageSize: "100Gi"
+
 # setup ingress for the node
 # example:
 # ingress:

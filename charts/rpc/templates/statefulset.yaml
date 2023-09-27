@@ -21,7 +21,7 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 100Gi
+            storage: {{ .Values.storageSize }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -58,14 +58,14 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
             - name: {{ include "rpc.fullname"  . }}-data-volume
-              mountPath: {{ .Values.persistentVolume.mountPath }}
+              mountPath: {{ .Values.dataDir }}
           {{- with .Values.envFrom }}
           envFrom: 
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env: 
             - name: DATA_DIR
-              value: {{ .Values.persistentVolume.mountPath }} 
+              value: {{ .Values.dataDir }} 
             - name: LOG_LEVEL
               value: {{ .Values.logLevel }}
           {{- with .Values.env }}
