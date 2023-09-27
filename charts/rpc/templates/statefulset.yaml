@@ -1,6 +1,6 @@
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "rpc.fullname"  . }}
   labels:
@@ -51,7 +51,7 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
-            - name: data-volume
+            - name: {{ include "rpc.fullname"  . }}-data-volume-pvc
               mountPath: {{ .Values.persistentVolume.mountPath }}
               subPath: "{{ .Values.persistentVolume.subPath }}"
           {{- with .Values.envFrom }}
@@ -114,6 +114,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumeClaimTemplates:
+        - metadata:
+            name:  {{ include "rpc.fullname"  . }}-data-volume-pvc
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 1Gi
       volumes:
         {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
@@ -131,15 +139,3 @@ spec:
             optional: {{ . }}
             {{- end }}
         {{- end }}
-        - name: data-volume
-        {{- if .Values.persistentVolume.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }} {{- include "rpc.fullname"  . }}-data-volume-pvc {{- end }}
-        {{- else }}
-          emptyDir:
-          {{- if .Values.emptyDir.sizeLimit }}
-            sizeLimit: {{ .Values.emptyDir.sizeLimit }}
-          {{- else }}
-            {}
-          {{- end -}}
-        {{- end -}}
