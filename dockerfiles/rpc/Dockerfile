@@ -28,6 +28,7 @@ RUN curl -L https://raw.githubusercontent.com/lavanet/lava-config/main/testnet-2
 RUN curl -L https://raw.githubusercontent.com/lavanet/lava-config/main/testnet-2/default_lavad_config_files/app.toml > /app/config/app.toml
 RUN curl -L https://raw.githubusercontent.com/lavanet/lava-config/main/testnet-2/default_lavad_config_files/client.toml > /app/config/client.toml
 RUN curl -L https://raw.githubusercontent.com/lavanet/lava-config/main/testnet-2/default_lavad_config_files/config.toml > /app/config/config.toml
+
 ###############################################################################
 ################################## RUNTIME ####################################
 ###############################################################################
