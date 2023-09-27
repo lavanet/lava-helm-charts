@@ -16,6 +16,14 @@ spec:
       lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}
       lavanet.xyz/node_type: "rpc"
       {{- include "rpc.selectorLabels" . | nindent 6 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ include "rpc.fullname"  . }}-data-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Gi
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -51,7 +59,7 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
-            - name: {{ include "rpc.fullname"  . }}-data-volume-pvc
+            - name: {{ include "rpc.fullname"  . }}-data-volume
               mountPath: {{ .Values.persistentVolume.mountPath }}
               subPath: "{{ .Values.persistentVolume.subPath }}"
           {{- with .Values.envFrom }}
@@ -114,14 +122,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumeClaimTemplates:
-        - metadata:
-            name:  {{ include "rpc.fullname"  . }}-data-volume-pvc
-          spec:
-            accessModes: [ "ReadWriteOnce" ]
-            resources:
-              requests:
-                storage: 100Gi
       volumes:
         {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
