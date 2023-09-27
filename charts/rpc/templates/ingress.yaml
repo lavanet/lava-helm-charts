@@ -1,4 +1,8 @@
 ---
+{{- $serviceName := include "rpc.fullname" .  -}}
+{{- if .Values.service.name -}}
+{{- $serviceName = .Values.service.name -}}
+{{- end -}}
 {{ if .Values.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -14,12 +18,44 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tlsOverride }}
   tls:
-    {{- tpl (toYaml .Values.ingress.tls | nindent 4) . }}
+    {{- tpl (toYaml .Values.ingress.tlsOverride | nindent 4) . }}
+  {{- else }}
+  {{- $certificateName := required ".Values.ingress.certificateName is required." .Values.ingress.certificateName -}}
+  {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
+  tls:
+    - secretName: {{ $certificateName | quote }}
+      hosts:
+        {{- range .Values.ingress.paths }}
+        {{- if (eq .hostPrefix "rpc") }}
+        -  "{{ $host }}"
+        {{- else }}
+        -  "{{ .hostPrefix }}-{{ $host }}"
+        {{- end }}
+        {{- end }}
   {{- end }}
-  {{-  if .Values.ingress.rules }}
+  {{-  if .Values.ingress.rulesOverride }}
   rules:
-    {{- tpl (toYaml .Values.ingress.rules | nindent 4) . }}
+    {{- tpl (toYaml .Values.ingress.rulesOverride | nindent 4) . }}
+  {{- else }}
+  rules:
+    {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
+    {{- range .Values.ingress.paths }}
+    {{- if (eq .hostPrefix "rpc") }}
+    - host: "{{ $host }}"
+    {{- else }}
+    - host: "{{ .hostPrefix }}-{{ $host }}"
+    {{- end }}
+      http:
+        paths:
+          - path: /
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  name: {{ .port }}
+    {{- end }}
   {{- end }}
 {{- end }}

@@ -66,10 +66,12 @@ spec:
           {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- range .Value.ports }}
           ports:
-            - name: {{ .Values.port.name }}
-              containerPort: {{ .Values.port.number }}
-              protocol: {{ .Values.port.protocol }}
+            - name: {{ .name }}
+              containerPort: {{ .number }}
+              protocol: {{ .protocol }}
+          {{- end }}
           {{- if .Values.command }}
           {{- with .Values.commmand.name }}
           command: 

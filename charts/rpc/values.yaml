@@ -31,8 +31,23 @@ chainId: "lava-testnet-2"
 ingress:
   enabled: true
   className: "nginx"
-  tls: []
-  rules: []
+  host: null
+  paths:
+    - port: rpc
+      hostPrefix: rpc
+      path: rpc
+      pathType: Prefix
+    - port: grpc-web
+      hostPrefix: grpc-web
+      path: grpc-web
+      pathType: Prefix
+    - port: grpc
+      hostPrefix: grpc
+      path: grpc
+      pathType: Prefix
+  certificateName: null
+  tlsOverride: null
+  rulesOverride: null
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
@@ -49,13 +64,19 @@ env:
 image:
   repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-rpc
   pullPolicy: IfNotPresent
-  tag: v0.23.5
+  tag: v0.21.1.2
 
 # port to expose the node on
-port:
-  name: default
-  number: 2224
-  protocol: TCP
+ports:
+  - name: rpc
+    number: 26657
+    protocol: TCP
+  - name: grpc
+    number: 9090
+    protocol: TCP
+  - name: grpc-web
+    number: 9091
+    protocol: TCP
 
 # set service account name
 serviceAccountName: null
@@ -66,7 +87,7 @@ service:
   name: null
   type: ClusterIP
   annotations: {}
-  # override .Values.port with these values
+  # override .Values.ports with these values
   ports: null
 
 # mount secrets as files, useful for mounting key file
@@ -111,7 +132,7 @@ persistentVolume:
   mountPath: /data
 
   ## data Persistent Volume size
-  size: 10Gi
+  size: 100Gi
 
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -151,10 +172,10 @@ persistentVolume:
 # resource limits for the node
 resources:
   requests:
-    cpu: "250m"
-    memory: 250Mi
+    cpu: "1000m"
+    memory: 2Gi
   limits:
-    memory: "2Gi"
+    memory: "4Gi"
 
 # override the start command to start the rpc
 command: null
