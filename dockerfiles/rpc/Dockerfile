@@ -3,16 +3,23 @@
 ###############################################################################
 FROM ubuntu as builder
 
-RUN apt-get update && apt-get install -y curl git build-essential
+RUN apt-get update && apt-get install -y curl git build-essential tar
 
 ARG TAG
+ARG COSMOVISOR_TAG="v1.5.0"
+
 RUN [ -z "$TAG" ] && echo "TAG is required (ex: v0.22.0)" && exit 1 || true
 
 WORKDIR app
 
 # download lavad binary
-RUN curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavad-${TAG}-linux-amd64" > /app/lavad
-RUN chmod +x /app/lavad
+RUN curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavad-${TAG}-linux-amd64" > /app/lavad && \
+    chmod +x /app/lavad
+
+# download cosmovisor
+RUN curl -L "https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor/${COSMOVISOR_TAG}/cosmovisor-${COSMOVISOR_TAG}-linux-amd64.tar.gz" > cosmovisor.tar.gz && \
+    tar -xf "cosmovisor.tar.gz" -C /app && \
+    chmod +x /app/cosmovisor
 
 # download config and genesis.json files
 RUN mkdir -p /app/config
@@ -29,6 +36,7 @@ FROM debian:stable-slim
 WORKDIR app
 
 COPY --from=builder /app/lavad /app/bin/lavad
+COPY --from=builder /app/cosmovisor /app/bin/cosmovisor
 COPY --from=builder /app/config/* /app/data/config/
 
 COPY run /app/bin/run
