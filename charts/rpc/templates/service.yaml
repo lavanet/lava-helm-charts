@@ -23,14 +23,15 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{ else }}
   ports:
-  {{- range .Value.ports }}
+  {{- range .Values.ports }}
     - name: {{ .name }}
       port: {{ .number }}
       protocol: {{ .protocol }}
       targetPort: {{ .name }}
   {{- end }}
+  {{- end }}
   selector:
     lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}
     lavanet.xyz/node_type: "rpc"
     {{- include "rpc.selectorLabels" . | nindent 4 }}
-{{- end }}
+{{- end -}}

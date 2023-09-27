@@ -15,11 +15,11 @@ chainId: "lava-testnet-2"
 # example:
 # ingress:
 #  enabled: true
-#  tls:
+#  tlsOverride:
 #    - secretName: lava-rpc-tls
 #      hosts:
 #        - lava-rpc.example.com
-#  rules:
+#  rulesOverride:
 #    - host: lava-rpc.example.com
 #      http:
 #        paths:
@@ -32,25 +32,30 @@ ingress:
   enabled: true
   className: "nginx"
   host: null
-  paths:
-    - port: rpc
-      hostPrefix: rpc
-      path: rpc
-      pathType: Prefix
-    - port: grpc-web
-      hostPrefix: grpc-web
-      path: grpc-web
-      pathType: Prefix
-    - port: grpc
-      hostPrefix: grpc
-      path: grpc
-      pathType: Prefix
+  http:
+    annotations: 
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    paths:
+      - port: rpc
+        hostPrefix: ""
+        path: rpc
+        pathType: Prefix
+      - port: grpc-web
+        hostPrefix: grpc-web
+        path: grpc-web
+        pathType: Prefix
+  grpc:
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    paths:
+      - port: grpc
+        hostPrefix: grpc
+        path: grpc
+        pathType: Prefix
   certificateName: null
   tlsOverride: null
   rulesOverride: null
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
 # add custom environment variables to the node using secret of configs
 envFrom: []
@@ -180,24 +185,24 @@ resources:
 # override the start command to start the rpc
 command: null
 
-# use a custom readiness probe
+# readiness probe
 readinessProbe:
   enabled: false
-  # httpGet:
-  #   path: /health
-  #   port: 5000
+  httpGet:
+    path: /status
+    port: 26657
   # initialDelaySeconds: 30
   # periodSeconds: 10
   # timeoutSeconds: 5
   # successThreshold: 1
   # failureThreshold: 3
 
-# use a custom liveness probe
+# liveness probe
 livenessProbe:
   enabled: false
-  # httpGet:
-  #   path: /health
-  #   port: 5000
+  httpGet:
+    path: /status
+    port: 26657
   # initialDelaySeconds: 30
   # periodSeconds: 10
   # timeoutSeconds: 5

@@ -66,8 +66,8 @@ spec:
           {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- range .Value.ports }}
           ports:
+          {{- range .Values.ports }}
             - name: {{ .name }}
               containerPort: {{ .number }}
               protocol: {{ .protocol }}
@@ -92,48 +92,10 @@ spec:
           {{- end }}
           {{ if .Values.livenessProbe.enabled }}
           livenessProbe:
-            exec:
-              command: 
-                - lavad
-                - test
-                - rpcrpc
-                - "--home"
-                - "{{ .Values.persistentVolume.mountPath }}"
-                - "--keyring-backend"
-                - "test"
-                - "--keyring-dir"
-                - "{{ .Values.persistentVolume.mountPath }}"
-                - "--node"
-                - "{{ $rpcNodeUrl }}"
-                - --from
-                - {{ include "rpc.keyname" . | quote }}
-                - --endpoints
-                {{- range .Values.supportedChainIds }}
-                - "{{ $endpoint }}:443,{{ . }}"
-                {{- end }}
             {{- toYaml (unset .Values.livenessProbe "enabled") | nindent 12 }}
           {{- end }}
           {{ if .Values.readinessProbe.enabled }}
           readinessProbe:
-            exec:
-              command: 
-                - lavad
-                - test
-                - rpcrpc
-                - "--home"
-                - "{{ .Values.persistentVolume.mountPath }}"
-                - "--keyring-backend"
-                - "test"
-                - "--keyring-dir"
-                - "{{ .Values.persistentVolume.mountPath }}"
-                - "--node"
-                - "{{ $rpcNodeUrl }}"
-                - --from
-                - {{ include "rpc.keyname" . | quote }}
-                - --endpoints
-                {{- range .Values.supportedChainIds }}
-                - "{{ $endpoint }}:443,{{ . }}"
-                {{- end }}
             {{- toYaml (unset .Values.readinessProbe "enabled") | nindent 12 }}
           {{ end }}
       {{- with .Values.nodeSelector }}
@@ -153,10 +115,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: "private-key-volume"
-          secret: 
-            secretName: {{ $keySecretName }}
-            optional: false
         {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
           secret:
