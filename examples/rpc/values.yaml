@@ -1,0 +1,16 @@
+# set the log level for the node
+logLevel: "warn"
+
+# provider node moniker, will default to the fullname
+moniker: "my-rpc"
+
+# ingress for the rpc node
+ingress:
+  enabled: true
+  className: "nginx"
+  host: my-rpc.devops.mydomain.xyz
+  certificateName: mydomain-xyz-tls
+  annotations:
+    external-dns.alpha.kubernetes.io/aws-region: us-east-1
+    external-dns.alpha.kubernetes.io/set-identifier: my-cluster-name
+    external-dns.custom.kubernetes.io/public-load-balancer: 'true'
