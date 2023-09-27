@@ -9,8 +9,6 @@ metadata:
     {{- include "rpc.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}
@@ -61,7 +59,6 @@ spec:
           {{- end }}
             - name: {{ include "rpc.fullname"  . }}-data-volume
               mountPath: {{ .Values.persistentVolume.mountPath }}
-              subPath: "{{ .Values.persistentVolume.subPath }}"
           {{- with .Values.envFrom }}
           envFrom: 
             {{- toYaml . | nindent 12 }}
@@ -92,7 +89,6 @@ spec:
           # default command
           {{- else }}
           command: ["run"]
-          args: [ ]
           {{- end }}
           {{- with .Values.resources }}
           resources:
