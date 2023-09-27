@@ -1,0 +1,219 @@
+# set the log level for the node
+logLevel: "error"
+
+# override the fullname
+fullnameOverride: null
+nameOverride: null
+
+# rpc node moniker, will default to the fullname
+moniker: null
+
+# chain id of lava
+chainId: "lava-testnet-2"
+
+# setup ingress for the node
+# example:
+# ingress:
+#  enabled: true
+#  tlsOverride:
+#    - secretName: lava-rpc-tls
+#      hosts:
+#        - lava-rpc.example.com
+#  rulesOverride:
+#    - host: lava-rpc.example.com
+#      http:
+#        paths:
+#          - path: /
+#            backend:
+#              serviceName: lava-rpc
+#              servicePort: 5000
+#  annotations: {}
+ingress:
+  enabled: true
+  className: "nginx"
+  host: null
+  annotations: {}
+  http:
+    annotations: 
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    paths:
+      - port: rpc
+        hostPrefix: ""
+        path: rpc
+        pathType: Prefix
+      - port: grpc-web
+        hostPrefix: grpc-web
+        path: grpc-web
+        pathType: Prefix
+  grpc:
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    paths:
+      - port: grpc
+        hostPrefix: grpc
+        path: grpc
+        pathType: Prefix
+  certificateName: null
+  tlsOverride: null
+  rulesOverride: null
+
+# add custom environment variables to the node using secret of configs
+envFrom: []
+
+# add custom environment variables to the node
+env:
+  - name: "SEED_NODES"
+    value: "3a445bfdbe2d0c8ee82461633aa3af31bc2b4dc0@testnet2-seed-node.lavanet.xyz:26656,e593c7a9ca61f5616119d6beb5bd8ef5dd28d62d@testnet2-seed-node2.lavanet.xyz:26656"
+
+# image to deploy
+image:
+  repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-rpc
+  pullPolicy: IfNotPresent
+  tag: v0.21.1.2
+
+# port to expose the node on
+ports:
+  - name: rpc
+    number: 26657
+    protocol: TCP
+  - name: grpc
+    number: 9090
+    protocol: TCP
+  - name: grpc-web
+    number: 9091
+    protocol: TCP
+
+# set service account name
+serviceAccountName: null
+
+# service settings
+service:
+  enabled: true
+  name: null
+  type: ClusterIP
+  annotations: {}
+  # override .Values.ports with these values
+  ports: null
+
+# mount secrets as files, useful for mounting key file
+extraSecretMounts: []
+  # - name: node-private-key
+  #   mountPath: /data
+  #   subPath: /keychain/node-private-key
+  #   secretName: node-private-key
+  #   readOnly: true
+
+# mount config as files, useful for mounting the config file
+extraConfigMounts: []
+  # - name: node-config
+  #   mountPath: /data
+  #   subPath: /data/node-config.toml
+  #   configName: node-config
+  #   readOnly: true
+
+# setup pvc for the node
+persistentVolume:
+  ## If true, will create/use a Persistent Volume Claim
+  ## If false, use emptyDir
+  enabled: true
+
+  ## Must match those of existing PV or dynamic provisioner
+  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  accessModes:
+    - ReadWriteOnce
+
+  ## Persistent Volume labels
+  labels: {}
+
+  ## Persistent Volume annotations
+  annotations: {}
+
+  ## Persistent Volume existing claim name
+  ## Requires persistentVolume.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+  ## server data Persistent Volume mount root path
+  mountPath: /data
+
+  ## data Persistent Volume size
+  size: 100Gi
+
+  ## Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  storageClass: null
+
+  ## Subdirectory of data Persistent Volume to mount
+  ## Useful if the volume's root directory is not empty
+  subPath: ""
+
+  ## Persistent Volume Claim Selector
+  ## Useful if Persistent Volumes have been provisioned in advance
+  ## Ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+  selector: null
+  ## ex: 
+  # selector:
+  #  matchLabels:
+  #    release: "stable"
+  #  matchExpressions:
+  #    - { key: environment, operator: In, values: [ dev ] }
+
+  ## Persistent Volume Name
+  ## Useful if Persistent Volumes have been provisioned in advance and you want to use a specific one
+  ##
+  volumeName: null
+  # volumeName: ""
+
+  volumeBindingMode: null
+
+  emptyDir:
+    ## emptyDir volume size limit
+    sizeLimit: ""
+
+# resource limits for the node
+resources:
+  requests:
+    cpu: "1000m"
+    memory: 2Gi
+  limits:
+    memory: "4Gi"
+
+# override the start command to start the rpc
+command: null
+
+# readiness probe
+readinessProbe:
+  enabled: false
+  httpGet:
+    path: /status
+    port: 26657
+  # initialDelaySeconds: 30
+  # periodSeconds: 10
+  # timeoutSeconds: 5
+  # successThreshold: 1
+  # failureThreshold: 3
+
+# liveness probe
+livenessProbe:
+  enabled: false
+  httpGet:
+    path: /status
+    port: 26657
+  # initialDelaySeconds: 30
+  # periodSeconds: 10
+  # timeoutSeconds: 5
+  # successThreshold: 1
+  # failureThreshold: 3
+
+imagePullSecrets: []
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}

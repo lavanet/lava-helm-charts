@@ -80,7 +80,9 @@ ingress:
   className: "nginx"
   tls: []
   rules: []
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
 # config for the node
 ## example

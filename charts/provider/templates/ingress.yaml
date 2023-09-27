@@ -9,8 +9,6 @@ metadata:
     lavanet.xyz/node_moniker:  {{ include "provider.moniker"  . }}    
     lavanet.xyz/node_type: "provider"
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

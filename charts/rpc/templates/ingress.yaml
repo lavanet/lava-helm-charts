@@ -1,0 +1,117 @@
+{{- $serviceName := include "rpc.fullname" .  -}}
+{{- if .Values.service.name -}}
+{{- $serviceName = .Values.service.name -}}
+{{- end -}}
+{{ if .Values.ingress.enabled -}}
+---
+# HTTP ingress definition.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "rpc.fullname"  . }}-http
+  labels:
+    {{- include "rpc.labels" . | nindent 4 }}
+    lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
+    lavanet.xyz/node_type: "rpc"
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.ingress.http.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{ if .Values.ingress.tlsOverride }}
+  tls:
+    {{- tpl (toYaml .Values.ingress.tlsOverride | nindent 4) . }}
+  {{- else }}
+  {{- $certificateName := required ".Values.ingress.certificateName is required." .Values.ingress.certificateName -}}
+  {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
+  tls:
+    - secretName: {{ $certificateName | quote }}
+      hosts:
+        {{- range .Values.ingress.http.paths }}
+        - {{- if (and (eq .port "rpc") (eq .hostPrefix "")) }} "{{ $host }}" {{- else }} "{{ .hostPrefix }}-{{ $host }}" {{ end }}
+        {{- end }}
+  {{- end }}
+  {{ if .Values.ingress.rulesOverride }}
+  rules:
+    {{- tpl (toYaml .Values.ingress.rulesOverride | nindent 4) . }}
+  {{- else }}
+  rules:
+    {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
+    {{- range .Values.ingress.http.paths }}
+    {{- if (and (eq .port "rpc") (eq .hostPrefix "")) }}
+    - host: "{{ $host }}"
+    {{- else }}
+    - host: "{{ .hostPrefix }}-{{ $host }}"
+    {{- end }}
+      http:
+        paths:
+          - path: /
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  name: {{ .port }}
+    {{- end }}
+  {{- end }}
+
+---
+# GRPC ingress definition.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "rpc.fullname"  . }}-grpc
+  labels:
+    {{- include "rpc.labels" . | nindent 4 }}
+    lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
+    lavanet.xyz/node_type: "rpc"
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.ingress.grpc.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{ if .Values.ingress.tlsOverride }}
+  tls:
+    {{- tpl (toYaml .Values.ingress.tlsOverride | nindent 4) . }}
+  {{- else }}
+  {{- $certificateName := required ".Values.ingress.certificateName is required." .Values.ingress.certificateName -}}
+  {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
+  tls:
+    - secretName: {{ $certificateName | quote }}
+      hosts:
+        {{- range .Values.ingress.grpc.paths }}
+        - {{- if (and (eq .port "rpc") (eq .hostPrefix "")) }} "{{ $host }}" {{- else }} "{{ .hostPrefix }}-{{ $host }}" {{ end }}
+        {{- end }}
+  {{- end }}
+  {{ if .Values.ingress.rulesOverride }}
+  rules:
+    {{- tpl (toYaml .Values.ingress.rulesOverride | nindent 4) . }}
+  {{- else }}
+  rules:
+    {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
+    {{- range .Values.ingress.grpc.paths }}
+    {{- if (and (eq .port "rpc") (eq .hostPrefix "")) }}
+    - host: "{{ $host }}"
+    {{- else }}
+    - host: "{{ .hostPrefix }}-{{ $host }}"
+    {{- end }}
+      http:
+        paths:
+          - path: /
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  name: {{ .port }}
+    {{- end }}
+  {{- end }}
+{{- end }}
