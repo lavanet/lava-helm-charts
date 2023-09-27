@@ -14,6 +14,9 @@ metadata:
     lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
     lavanet.xyz/node_type: "rpc"
   annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     {{- with .Values.ingress.http.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -67,6 +70,9 @@ metadata:
     lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
     lavanet.xyz/node_type: "rpc"
   annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     {{- with .Values.ingress.grpc.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
