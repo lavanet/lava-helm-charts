@@ -121,7 +121,7 @@ spec:
             accessModes: [ "ReadWriteOnce" ]
             resources:
               requests:
-                storage: 1Gi
+                storage: 100Gi
       volumes:
         {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
