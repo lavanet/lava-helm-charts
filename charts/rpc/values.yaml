@@ -8,6 +8,9 @@ nameOverride: null
 # rpc node moniker, will default to the fullname
 moniker: null
 
+# number of nodes to run
+replicasCount: 1
+
 # chain id of lava
 chainId: "lava-testnet-2"
 
