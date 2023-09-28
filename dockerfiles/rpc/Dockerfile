@@ -36,6 +36,8 @@ FROM debian:stable-slim
 
 WORKDIR app
 
+RUN apt-get update && apt-get install -y ca-certificates
+
 COPY --from=builder /app/lavad /app/bin/lavad
 COPY --from=builder /app/cosmovisor /app/bin/cosmovisor
 COPY --from=builder /app/config/* /app/data/config/
