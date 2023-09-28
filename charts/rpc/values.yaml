@@ -125,9 +125,9 @@ extraConfigMounts: []
 resources:
   requests:
     cpu: "1"
-    memory: 2Gi
+    memory: 4Gi
   limits:
-    memory: "4Gi"
+    memory: 8Gi
 
 # override the start command to start the rpc
 command: null
