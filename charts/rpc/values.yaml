@@ -78,7 +78,7 @@ env:
 # image to deploy
 image:
   repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-rpc
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: v0.21.1.2
 
 # port to expose the node on
