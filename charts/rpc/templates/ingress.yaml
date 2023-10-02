@@ -14,6 +14,7 @@ metadata:
     lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
     lavanet.xyz/node_type: "rpc"
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -46,8 +47,8 @@ spec:
     - host: "{{ $host }}"
       http:
         paths:
-          - path: /rpc
-            pathType: {{ .pathType }}
+          - path: /rpc(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ $serviceName }}
