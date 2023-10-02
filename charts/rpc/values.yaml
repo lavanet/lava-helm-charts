@@ -64,7 +64,7 @@ ingress:
 
       - port: grpc-web
         hostPrefix: grpc-web
-        path: grpc-web
+        path: / 
         pathType: Prefix
   grpc:
     annotations:
