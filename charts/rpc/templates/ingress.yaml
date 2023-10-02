@@ -14,7 +14,6 @@ metadata:
     lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  . }}    
     lavanet.xyz/node_type: "rpc"
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -33,7 +32,7 @@ spec:
     - secretName: {{ $certificateName | quote }}
       hosts:
         {{- range .Values.ingress.http.paths }}
-        - {{- if (and (eq .port "rpc") (eq .hostPrefix "")) }} "{{ $host }}" {{- else }} "{{ .hostPrefix }}-{{ $host }}" {{ end }}
+        - {{- if (eq .hostPrefix "") }} "{{ $host }}" {{- else }} "{{ .hostPrefix }}-{{ $host }}" {{ end }}
         {{- end }}
   {{- end }}
   {{ if .Values.ingress.rulesOverride }}
@@ -43,29 +42,20 @@ spec:
   rules:
     {{- $host := required ".Values.ingress.host is required." .Values.ingress.host -}}
     {{- range .Values.ingress.http.paths }}
-    {{- if (and (eq .port "rpc") (eq .hostPrefix "")) }}
+    {{- if (eq .hostPrefix "") }}
     - host: "{{ $host }}"
-      http:
-        paths:
-          - path: /rpc(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ $serviceName }}
-                port:
-                  name: {{ .port }}
     {{- else }}
     - host: "{{ .hostPrefix }}-{{ $host }}"
+    {{- end }}
       http:
         paths:
-          - path: /
+          - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
               service:
                 name: {{ $serviceName }}
                 port:
                   name: {{ .port }}
-    {{- end }}
     {{- end }}
   {{- end }}
 
@@ -115,7 +105,7 @@ spec:
     {{- end }}
       http:
         paths:
-          - path: /
+          - path: {{.path}}
             pathType: {{ .pathType }}
             backend:
               service:

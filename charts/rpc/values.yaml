@@ -45,11 +45,23 @@ ingress:
   http:
     annotations: 
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
     paths:
       - port: rpc
         hostPrefix: ""
-        path: rpc
+        path: /
         pathType: Prefix
+
+      - port: rpc
+        hostPrefix: ""
+        path: /rpc(/|$)(.*)
+        pathType: ImplementationSpecific
+
+      - port: rest
+        hostPrefix: ""
+        path: /rest(/|$)(.*)
+        pathType: ImplementationSpecific
+
       - port: grpc-web
         hostPrefix: grpc-web
         path: grpc-web
@@ -61,7 +73,7 @@ ingress:
     paths:
       - port: grpc
         hostPrefix: grpc
-        path: grpc
+        path: /
         pathType: Prefix
   certificateName: null
   tlsOverride: null
@@ -85,6 +97,9 @@ image:
 ports:
   - name: rpc
     number: 26657
+    protocol: TCP
+  - name: rest
+    number: 1317
     protocol: TCP
   - name: grpc
     number: 9090
