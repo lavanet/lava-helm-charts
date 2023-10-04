@@ -45,13 +45,19 @@ def build(version_tag: str, docker_tag = None):
     if docker_tag is None:
         docker_tag = version_tag
 
-    print(f"Building {version_tag} with docker tag {docker_tag}")
+    print(f"Building: lava tag={version_tag}, docker image tag={docker_tag}")
    
     images = [["rpc", "lava-rpc"]]
+    use_cache_env = os.environ.get('USE_CACHE')
+    use_cache = use_cache_env != None and use_cache_env != 'false' and use_cache_env != '' and use_cache_env != '0'
 
     for [dockerfile_path, image_name] in images:
         args = ["docker", "buildx", "build", ".", "-t", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{docker_tag}", "--build-arg", f"TAG={version_tag}", "-f", "Dockerfile", "--push"]
-        exit_code = subprocess.Popen( args, cwd=f"dockerfiles/{dockerfile_path}").wait()
+
+        if use_cache:
+            args = args + ["--cache-from", "type=local,src=/tmp/.buildx-cache", "--cache-to", "type=local,dest=/tmp/.buildx-cache-new"]
+
+        exit_code = subprocess.Popen(args, cwd=f"dockerfiles/{dockerfile_path}").wait()
 
         if exit_code != 0:
             print(f"ERROR: Failed to build {image_name}")
