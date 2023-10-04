@@ -45,7 +45,6 @@ def build(version_tag: str, docker_tag = None):
     if docker_tag is None:
         docker_tag = version_tag
 
-    print(f"Building: lava tag={version_tag}, docker image tag={docker_tag}")
    
     images = [["rpc", "lava-rpc"]]
 
@@ -59,6 +58,8 @@ def build(version_tag: str, docker_tag = None):
         if image_exists_in_repo(image_name, docker_tag):
             print(f"Image {image_name}:{docker_tag} already exists in repository, skipping")
             continue
+        else:
+            print(f"Building: lava tag={version_tag}, docker image {image_name}:{docker_tag}")
 
         args = ["docker", "buildx", "build", ".", "-t", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{docker_tag}", "--build-arg", f"TAG={version_tag}", "-f", "Dockerfile", "--push"]
 
