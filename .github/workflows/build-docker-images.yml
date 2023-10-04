@@ -62,7 +62,7 @@ jobs:
         run: |
           export TAGS=$(cat .github/tags.yaml | yq e ".tags" -o json -P -)
           export USE_CACHE="true"
-          python3 .github/build_all.py
+          python3 .github/builder.py
 
         # Necessary if you don't want your cache to grow forever, until
         # https://github.com/docker/build-push-action/issues/252
