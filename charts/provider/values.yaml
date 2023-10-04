@@ -130,7 +130,7 @@ env: []
 
 # image to deploy
 image:
-  repository: us-central1-docker.pkg.dev/lavanet-public/images/lavad
+  repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-provider
   pullPolicy: IfNotPresent
   tag: latest
 

@@ -5,4 +5,4 @@ description: Helm chart for launching a lava rpc node
 type: application
 version: 0.1.0
 
-appVersion: "0.22.0"
+appVersion: "0.24.0"
