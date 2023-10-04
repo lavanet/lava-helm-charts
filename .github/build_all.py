@@ -59,7 +59,7 @@ def build(version_tag: str, docker_tag = None):
             print(f"Image {image_name}:{docker_tag} already exists in repository, skipping")
             continue
         else:
-            print(f"Building: lava tag={version_tag}, docker image {image_name}:{docker_tag}")
+            print(f"Building: lava tag={version_tag}, docker image {image_name}:{docker_tag}\n")
 
         args = ["docker", "buildx", "build", ".", "-t", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{docker_tag}", "--build-arg", f"TAG={version_tag}", "-f", "Dockerfile", "--push"]
 
@@ -72,10 +72,12 @@ def build(version_tag: str, docker_tag = None):
             print(f"ERROR: Failed to build {image_name}")
             exit(1)
 
+        print(f"Successfully built {image_name}:{docker_tag}\n\n")
+
 def image_exists_in_repo(image_name: str, tag: str) -> bool:
     args = ["docker", "manifest", "inspect", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{tag}"]
+    exit_code = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).wait()
 
-    exit_code = subprocess.Popen(args).wait()
     return exit_code == 0
 
 
