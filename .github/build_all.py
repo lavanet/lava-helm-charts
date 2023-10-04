@@ -51,9 +51,6 @@ def build(version_tag: str, docker_tag = None):
     use_cache_env = os.environ.get('USE_CACHE')
     use_cache = use_cache_env != None and use_cache_env != 'false' and use_cache_env != '' and use_cache_env != '0'
 
-    if use_cache:
-        print("Using cache")
-
     for [dockerfile_path, image_name] in images:
         if image_exists_in_repo(image_name, docker_tag):
             print(f"Image {image_name}:{docker_tag} already exists in repository, skipping")
@@ -72,7 +69,7 @@ def build(version_tag: str, docker_tag = None):
             print(f"ERROR: Failed to build {image_name}")
             exit(1)
 
-        print(f"Successfully built {image_name}:{docker_tag}\n\n")
+        print(f"Successfully built {image_name}:{docker_tag}\n")
 
 def image_exists_in_repo(image_name: str, tag: str) -> bool:
     args = ["docker", "manifest", "inspect", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{tag}"]

@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 jobs:
-  main:
+  build-docker-images:
     environment: Configure CI/CD
     runs-on: ubuntu-latest
     steps:
