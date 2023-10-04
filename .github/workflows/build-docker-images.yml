@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ".github/tags.yaml"
+      - ".github/build_all.py"
+      - ".github/workflows/build-docker-images.yml"
 
   workflow_dispatch: {}
 
