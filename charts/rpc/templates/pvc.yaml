@@ -16,4 +16,13 @@ spec:
   resources:
     requests:
       storage: "{{ .Values.experimentalGcsFuse.storage }}"
+  csi:
+    driver: gcs.csi.ofek.dev
+    volumeHandle: csi-gcs
+    volumeAttributes:
+      gid: "1000"
+      uid: "1000"
+      dirMode: "0775"
+      fileMode: "0664"
+      implicitDirs: "true"
 {{- end -}}

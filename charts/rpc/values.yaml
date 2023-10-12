@@ -183,7 +183,8 @@ experimentalGcsFuse:
   enabled: false
   storage: 500Gi
   accessModes: ["ReadWriteMany"]
-  annotations: {}
+  annotations: 
+    pv.beta.kubernetes.io/gid: "1000"
   storageClass: "csi-gcs"
   mountPath: "/data"
   subPath: ""
