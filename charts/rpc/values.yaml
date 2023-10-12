@@ -184,9 +184,9 @@ experimentalGcsFuse:
   storage: 500Gi
   accessModes: ["ReadWriteMany"]
   annotations: 
+    gcs.csi.ofek.dev/gid: "0"
+    gcs.csi.ofek.dev/uid: "0"
     gcs.csi.ofek.dev/dir-mode: "0775"
-    gcs.csi.ofek.dev/file-mode: "0664"
-    gcs.csi.ofek.dev/implicit-dirs: "true"
+    # gcs.csi.ofek.dev/file-mode: "0775"
   storageClass: "csi-gcs"
   mountPath: "/data"
-  subPath: ""

@@ -53,8 +53,11 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
             - name: data-volume
-              mountPath: "{{ .Values.experimentalGcsFuse.mountPath }}"
-              subPath: "{{ .Values.experimentalGcsFuse.subPath }}"
+              mountPath: "{{ .Values.experimentalGcsFuse.mountPath }}/data"
+            - name: config-volume
+              mountPath: "{{ .Values.experimentalGcsFuse.mountPath }}/config"
+            - name: cosmovisor-volume
+              mountPath: "{{ .Values.experimentalGcsFuse.mountPath }}/cosmovisor"
           {{- with .Values.envFrom }}
           envFrom: 
             {{- toYaml . | nindent 12 }}
@@ -135,4 +138,10 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: {{ include "rpc.fullname"  . }}-data-volume-pvc
+        - name: config-volume
+          persistentVolumeClaim:
+            claimName: {{ include "rpc.fullname"  . }}-config-volume-pvc
+        - name: cosmovisor-volume
+          persistentVolumeClaim:
+            claimName: {{ include "rpc.fullname"  . }}-cosmovisor-volume-pvc
 {{- end -}}

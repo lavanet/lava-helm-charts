@@ -1,4 +1,5 @@
 {{- if .Values.experimentalGcsFuse.enabled }}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -16,4 +17,30 @@ spec:
   resources:
     requests:
       storage: "{{ .Values.experimentalGcsFuse.storage }}"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "rpc.fullname"  . }}-config-volume-pvc
+  annotations:
+  labels:
+    {{- include "rpc.labels" . | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: "1Gi"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "rpc.fullname"  . }}-cosmovisor-volume-pvc
+  annotations:
+  labels:
+    {{- include "rpc.labels" . | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: "1Gi"
 {{- end -}}
