@@ -145,9 +145,7 @@ resources:
     memory: 8Gi
 
 # override the start command to start the rpc
-command: 
-  name: "tail"
-  args: ["-f", "/app/bin/run.sh"]
+command: null
 
 # readiness probe
 readinessProbe:
@@ -187,6 +185,11 @@ experimentalGcsFuse:
   accessModes: ["ReadWriteMany"]
   annotations: 
     pv.beta.kubernetes.io/gid: "1000"
+    gcs.csi.ofek.dev/gid: "1000"
+    gcs.csi.ofek.dev/uid: "1000"
+    gcs.csi.ofek.dev/dir-mode: "0775"
+    gcs.csi.ofek.dev/file-mode: "0664"
+    gcs.csi.ofek.dev/implicit-dirs: "true"
   storageClass: "csi-gcs"
   mountPath: "/data"
   subPath: ""
