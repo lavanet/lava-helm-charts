@@ -1,0 +1,19 @@
+{{- if .Values.experimentalGcsFuse.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "rpc.fullname"  . }}-data-volume-pvc
+  {{- if .Values.experimentalGcsFuse.annotations }}
+  annotations:
+{{ toYaml .Values.experimentalGcsFuse.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    {{- include "rpc.labels" . | nindent 4 }}
+spec:
+  accessModes:
+{{ toYaml .Values.experimentalGcsFuse.accessModes | indent 4 }}
+  storageClassName: {{ default "csi-gcs" .Values.experimentalGcsFuse.storageClass }}
+  resources:
+    requests:
+      storage: "{{ .Values.experimentalGcsFuse.storage }}"
+{{- end -}}

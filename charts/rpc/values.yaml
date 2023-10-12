@@ -178,3 +178,11 @@ affinity: {}
 podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
+
+experimentalGcsFuse:
+  enabled: false
+  storage: 500Gi
+  accessModes: ["ReadWriteMany"]
+  annotations: {}
+  storageClass: "csi-gcs"
+
