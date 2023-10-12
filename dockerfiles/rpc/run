@@ -29,8 +29,11 @@ if [ ! -f "$DATA_DIR/config/genesis.json" ]; then
   cp /app/data/config/* $DATA_DIR/config/
 
   mkdir -p $DATA_DIR/data
-  cosmovisor init $(which lavad)
+  chmod +x "$(which lavad)"
+  cosmovisor init "$(which lavad)"
 fi
 
 echo "Running RPC node"
+
+chmod +x $DATA_DIR/cosmovisor/genesis/bin/lavad
 cosmovisor run start --home=$DATA_DIR --p2p.seeds $SEED_NODES
