@@ -84,8 +84,8 @@ spec:
           {{- end }}
           # default command
           {{- else }}
-          command: ["run"]
-          args: [ ]
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
           {{- end }}
           {{- with .Values.resources }}
           resources:
