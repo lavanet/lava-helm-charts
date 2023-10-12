@@ -185,4 +185,5 @@ experimentalGcsFuse:
   accessModes: ["ReadWriteMany"]
   annotations: {}
   storageClass: "csi-gcs"
-
+  mountPath: "/data"
+  subPath: ""
