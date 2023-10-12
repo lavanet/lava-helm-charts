@@ -134,5 +134,5 @@ spec:
         {{- end }}
         - name: data-volume
           persistentVolumeClaim:
-            claimName: {{- include "rpc.fullname"  . }}-data-volume-pvc
+            claimName: {{ include "rpc.fullname"  . }}-data-volume-pvc
 {{- end -}}
