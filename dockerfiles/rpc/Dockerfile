@@ -45,7 +45,7 @@ COPY --from=builder /app/config/* /app/data/config/
 COPY run /app/bin/run
 
 RUN chmod +x /app/bin/run && \
-    chmod +x /app/lavad
+    chmod +x /app/bin/lavad
 
 ENV PATH="/app/bin:${PATH}"
 
