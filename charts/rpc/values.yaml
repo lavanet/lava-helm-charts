@@ -184,9 +184,8 @@ experimentalGcsFuse:
   storage: 500Gi
   accessModes: ["ReadWriteMany"]
   annotations: 
-    pv.beta.kubernetes.io/gid: "1000"
-    gcs.csi.ofek.dev/gid: "1000"
-    gcs.csi.ofek.dev/uid: "1000"
+    gcs.csi.ofek.dev/gid: "root"
+    gcs.csi.ofek.dev/uid: "root"
     gcs.csi.ofek.dev/dir-mode: "0775"
     gcs.csi.ofek.dev/file-mode: "0664"
     gcs.csi.ofek.dev/implicit-dirs: "true"
