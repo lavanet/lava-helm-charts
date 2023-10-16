@@ -38,7 +38,7 @@ snapshot:
       # remove lost+found directory if it exists
       rm -rf $RPC_DATA_DIR/lost+found
 
-      RPC_DATA_DIR_CONTENTS="$(ls -A $RPC_DATA_DIR)"
+      RPC_DATA_DIR_CONTENTS="$(ls -A $RPC_DATA_DIR/data)"
 
       if [ -z "$RPC_DATA_DIR_CONTENTS" ]; then
         mkdir -p "$TMP_DIR"
