@@ -18,7 +18,16 @@ chainId: "lava-testnet-2"
 dataDir: "/data"
 
 # set the volume storage size
-storageSize: "100Gi"
+storageSize: "500Gi"
+
+# use snapshot for downloading the chain
+snapshot:
+  enabled: false
+  url: null
+  image:
+    repository: busybox
+    tag: "latest"
+    pullPolicy: Always
 
 # setup ingress for the node
 # example:

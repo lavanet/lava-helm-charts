@@ -38,6 +38,36 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.snapshot.enabled }}
+      initContainers:
+        - name: download-and-install-snapshot
+          image: "{{ .Values.snapshot.image.repository }}:{{ .Values.snapshot.image.tag }}"
+          imagePullPolicy: {{ .Values.snapshot.image:pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -ex
+              SNAPSHOT_URL="{{ .Values.snapshot.url }}"
+              SNAPSHOT_FILE="/tmp/snapshot.tar.gz"
+              SNAPSHOT_DIR="/tmp/snapshot"
+
+              RPC_DATA_DIR="{{ .Values.dataDir }}"
+              RPC_DATA_DIR_CONTENTS="$(ls -A $RPC_DATA_DIR)"
+
+              if [ -z "$RPC_DATA_DIR_CONTENTS" ]; then
+                echo "Downloading snapshot from $SNAPSHOT_URL"
+                curl -sSL "$SNAPSHOT_URL" -o "$SNAPSHOT_FILE"
+                mkdir -p "$SNAPSHOT_DIR"
+                tar -xzf "$SNAPSHOT_FILE" -C "$SNAPSHOT_DIR"
+                cp -r "$SNAPSHOT_DIR"/* "$RPC_DATA_DIR"
+                rm -rf "$SNAPSHOT_DIR" "$SNAPSHOT_FILE"
+              else
+                echo "RPC data directory is not empty, skipping snapshot download"
+              fi
+          volumeMounts:
+            - name: {{ include "rpc.fullname"  . }}-data-volume
+              mountPath: {{ .Values.dataDir }}
+      {{- end }}
       containers:
         - name: {{ include "rpc.fullname"  . }}
           securityContext:
