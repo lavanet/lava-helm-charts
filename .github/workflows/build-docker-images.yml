@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - ".github/tags.yaml"
-      - ".github/build_all.py"
+      - ".github/builder.py"
       - ".github/workflows/build-docker-images.yml"
 
   workflow_dispatch: {}
