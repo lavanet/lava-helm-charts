@@ -2,9 +2,9 @@ import json
 import os
 import requests
 import subprocess
-from typing import List
+from typing import List, Tuple
 
-def get_release_tags() -> List[str]:
+def get_release_and_pre_release_tags() -> Tuple[List[str], List[str]]:
     tags_env = os.environ['TAGS']
     if tags_env == '':
         print("ERROR: TAGS environment variable is not set.")
@@ -25,27 +25,39 @@ def get_release_tags() -> List[str]:
             tags.append(tag)
 
     releases = []
+    pre_releases = []
+
     github_release_url = "https://api.github.com/repos/lavanet/lava/releases"
 
     response = requests.get(github_release_url)
     releases_json = response.json()
 
     for release in releases_json:
+        # create releases list
         if release['tag_name'] in tags and release['draft'] == False and release['prerelease'] == False:
             releases.append(release['tag_name'])
 
-        if len(releases) == len(tags):
+        # create pre-releases list
+        if release['tag_name'] in tags and release['draft'] == False and release['prerelease'] == True:
+            pre_releases.append(release['tag_name'])
+
+        # break if we have all the tags we need
+        if len(releases) + len(pre_releases) == len(tags):
             break
 
-    return releases
+    return releases, pre_releases
 
 def main():
-    releases = get_release_tags()
+    releases, pre_releases = get_release_and_pre_release_tags()
     latest_release = releases[0]
 
-    # build versions
+    # build release versions
     for release in releases:
         build(release)
+
+    # build pre-release versions
+    for pre_release in pre_releases:
+        build(pre_release, f"pre-{pre_release}")
 
     # build latest
     build(latest_release, "latest")
