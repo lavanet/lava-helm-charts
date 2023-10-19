@@ -69,7 +69,7 @@ def build(version_tag: str, docker_tag = None):
     use_cache_env = os.environ.get('USE_CACHE')
     use_cache = use_cache_env != None and use_cache_env != 'false' and use_cache_env != '' and use_cache_env != '0'
 
-    images = [["rpc", "lava-rpc"], ["provider", "lava-provider"]]
+    images = [["rpc", "lava-rpc"], ["provider", "lava-provider"], ["lavad", "lavad"], ["lavap", "lavap"], ["lavavisor", "lavavisor"]]
     for [dockerfile_path, image_name] in images:
         if docker_tag != "latest" and image_exists_in_repo(image_name, docker_tag):
             print(f"Image {image_name}:{docker_tag} already exists in repository, skipping")
