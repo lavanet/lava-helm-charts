@@ -5,12 +5,14 @@ Helm charts for running lava nodes
 
 - Docs [/charts/provider/README.md](/charts/provider/README.md)
 - Example [/examples/provider/](/examples/provider)
+- Chart: `oci://us-central1-docker.pkg.dev/lavanet-public/charts/lava-provider`
 - Image: `us-central1-docker.pkg.dev/lavanet-public/images/lava-provider:latest`
 
 ## RPC
 
 - Docs [/charts/rpc/README.md](/charts/rpc/README.md)
 - Example [/examples/rpc/](/examples/rpc)
+- Chart: ` oci://us-central1-docker.pkg.dev/lavanet-public/charts/lava-rpc`
 - Image: `us-central1-docker.pkg.dev/lavanet-public/images/lava-rpc:latest`
 
 ## Other Images:
