@@ -38,6 +38,16 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.snapshot.enabled }}
+      initContainers:
+        - name: download-and-install-snapshot
+          image: "{{ .Values.snapshot.image.repository }}:{{ .Values.snapshot.image.tag }}"
+          imagePullPolicy: {{ .Values.snapshot.image.pullPolicy }}
+          command: {{ tpl (.Values.snapshot.command | toYaml | nindent 12) . }}
+          volumeMounts:
+            - name: {{ include "rpc.fullname"  . }}-data-volume
+              mountPath: {{ .Values.dataDir }}
+      {{- end }}
       containers:
         - name: {{ include "rpc.fullname"  . }}
           securityContext:

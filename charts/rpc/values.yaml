@@ -18,7 +18,40 @@ chainId: "lava-testnet-2"
 dataDir: "/data"
 
 # set the volume storage size
-storageSize: "100Gi"
+storageSize: "500Gi"
+
+# use snapshot for downloading the chain
+snapshot:
+  enabled: false
+  url: null
+  command: 
+    - "/bin/sh"
+    - "-c"
+    - |
+      set -ex
+      SNAPSHOT_URL="{{ required ".Values.snapshot.url is required" .Values.snapshot.url }}"
+      TMP_DIR="{{.Values.dataDir}}/tmp/"
+      SNAPSHOT_FILE="$TMP_DIR/snapshot.tar.zst"
+      RPC_DATA_DIR="{{ .Values.dataDir }}"
+      SNAPSHOT_COMPLETE_FILE="$RPC_DATA_DIR/db/snapshot_extraction_complete"
+
+      mkdir -p "$RPC_DATA_DIR/db"
+      if [ ! -f "$SNAPSHOT_COMPLETE_FILE" ]; then
+        mkdir -p "$TMP_DIR"
+        echo "Downloading snapshot from $SNAPSHOT_URL"
+
+        curl -sSL "$SNAPSHOT_URL" -o "$SNAPSHOT_FILE"
+        tar -axf "$SNAPSHOT_FILE" -C "{{ .Values.dataDir }}/data"
+
+        rm -rf "$TMP_DIR"
+        echo $(date) >> "$SNAPSHOT_COMPLETE_FILE"
+      else
+        echo "RPC data directory is not empty, skipping snapshot download"
+      fi
+  image:
+    repository: us-central1-docker.pkg.dev/lavanet-public/images/snapshot-extractor
+    tag: "latest"
+    pullPolicy: Always
 
 # setup ingress for the node
 # example:
