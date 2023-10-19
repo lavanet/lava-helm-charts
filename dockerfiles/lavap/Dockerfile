@@ -15,12 +15,8 @@ WORKDIR app
 RUN mkdir -p /app/bin
 
 # download lava binaries
-RUN curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavad-${TAG}-linux-amd64" > /app/bin/lavad && \
-    chmod +x /app/bin/lavad  && \
-    curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavap-${TAG}-linux-amd64" > /app/bin/lavap && \
-    chmod +x /app/bin/lavap && \
-    curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavavisor-${TAG}-linux-amd64" > /app/bin/lavavisor && \
-    chmod +x /app/bin/lavavisor
+RUN curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavap-${TAG}-linux-amd64" > /app/bin/lavap && \
+    chmod +x /app/bin/lavap 
 
 ###############################################################################
 ################################## RUNTIME ####################################
