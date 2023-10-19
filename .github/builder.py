@@ -73,7 +73,7 @@ def main():
 
 
 def build(version_tag: str, docker_tags=[]):
-    if len(docker_tags) == 0:
+    if docker_tags == []:
         docker_tags = [version_tag]
 
     use_cache_env = os.environ.get("USE_CACHE")
@@ -93,13 +93,15 @@ def build(version_tag: str, docker_tags=[]):
     ]
 
     for [dockerfile_path, image_name] in images:
-        filtered_docker_tags = []
-        for docker_tag in docker_tags:
-            if docker_tag == "latest" or not image_exists_in_repo( image_name, docker_tag):
-                filtered_docker_tags.append(docker_tag)
+        # if latest is one of the tag, always build
+        # for non latest only build if image doesn't exist in repo
+        if "latest" in docker_tags:
+            filtered_docker_tags = docker_tags
+        else:
+            filtered_docker_tags = [docker_tag for docker_tag in docker_tags if not image_exists_in_repo(image_name, docker_tag)]
 
         if filtered_docker_tags == []:
-            print(f"Image {image_name}:{docker_tags} already exists in repository, skipping")
+            print(f"Image {image_name} {docker_tags} already exists in repository, skipping")
             continue
         else:
             print(f"Building {dockerfile_path} ({image_name} {filtered_docker_tags}): TAG={version_tag}\n")
