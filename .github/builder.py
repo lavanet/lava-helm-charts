@@ -66,7 +66,7 @@ def main():
     build(latest_release, "latest")
 
 def build(version_tag: str, docker_tags = []):
-    if docker_tags.length == 0:
+    if len(docker_tags) == 0:
         docker_tags = [version_tag]
 
     use_cache_env = os.environ.get('USE_CACHE')
@@ -83,7 +83,7 @@ def build(version_tag: str, docker_tags = []):
             print(f"Image {image_name}:{docker_tags} already exists in repository, skipping")
             continue
         else:
-            print(f"Building {dockerfile_path} ({image_name}:{filtered_docker_tags}): TAG={version_tag}\n")
+            print(f"Building {dockerfile_path} ({image_name} {filtered_docker_tags}): TAG={version_tag}\n")
 
         # create tags list and flatten
         tags = [["-t", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{docker_tag}"] for docker_tag in filtered_docker_tags]
@@ -100,7 +100,7 @@ def build(version_tag: str, docker_tags = []):
             print(f"ERROR: Failed to build {image_name}")
             exit(1)
 
-        print(f"Successfully built {image_name}:{filtered_docker_tags}\n")
+        print(f"Successfully built {image_name} {filtered_docker_tags}\n")
 
 def image_exists_in_repo(image_name: str, tag: str) -> bool:
     args = ["docker", "manifest", "inspect", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{tag}"]
