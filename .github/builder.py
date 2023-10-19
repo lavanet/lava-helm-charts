@@ -52,8 +52,11 @@ def main():
     latest_release = releases[0]
 
     # build release versions
-    for release in releases:
-        build(release)
+    for (i, release) in enumerate(releases):
+        if i == 0:
+            build(release, ["latest", release])
+        else:
+            build(release, [release])
 
     # build pre-release versions
     for pre_release in pre_releases:
@@ -62,22 +65,31 @@ def main():
     # build latest
     build(latest_release, "latest")
 
-def build(version_tag: str, docker_tag = None):
-    if docker_tag is None:
-        docker_tag = version_tag
+def build(version_tag: str, docker_tags = []):
+    if docker_tags.length == 0:
+        docker_tags = [version_tag]
 
     use_cache_env = os.environ.get('USE_CACHE')
     use_cache = use_cache_env != None and use_cache_env != 'false' and use_cache_env != '' and use_cache_env != '0'
 
     images = [["rpc", "lava-rpc"], ["provider", "lava-provider"], ["lavad", "lavad"], ["lavap", "lavap"], ["lavavisor", "lavavisor"]]
     for [dockerfile_path, image_name] in images:
-        if docker_tag != "latest" and image_exists_in_repo(image_name, docker_tag):
-            print(f"Image {image_name}:{docker_tag} already exists in repository, skipping")
+        filtered_docker_tags = []
+        for docker_tag in docker_tags:
+            if docker_tag == "latest" or not image_exists_in_repo(image_name, docker_tag):
+                filtered_docker_tags.append(docker_tag)
+
+        if filtered_docker_tags == []:
+            print(f"Image {image_name}:{docker_tags} already exists in repository, skipping")
             continue
         else:
-            print(f"Building {dockerfile_path} ({image_name}:{docker_tag}): TAG={version_tag}\n")
+            print(f"Building {dockerfile_path} ({image_name}:{filtered_docker_tags}): TAG={version_tag}\n")
 
-        args = ["docker", "buildx", "build", ".", "-t", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{docker_tag}", "--build-arg", f"TAG={version_tag}", "-f", "Dockerfile", "--push"]
+        # create tags list and flatten
+        tags = [["-t", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{docker_tag}"] for docker_tag in filtered_docker_tags]
+        tags = [tag for sub_list in tags for tag in sub_list]
+
+        args = ["docker", "buildx", "build", ".", *tags, "--build-arg", f"TAG={version_tag}", "-f", "Dockerfile", "--push"]
 
         if use_cache:
             args = args + ["--cache-from", "type=local,src=/tmp/.buildx-cache", "--cache-to", "type=local,dest=/tmp/.buildx-cache-new"]
@@ -88,7 +100,7 @@ def build(version_tag: str, docker_tag = None):
             print(f"ERROR: Failed to build {image_name}")
             exit(1)
 
-        print(f"Successfully built {image_name}:{docker_tag}\n")
+        print(f"Successfully built {image_name}:{filtered_docker_tags}\n")
 
 def image_exists_in_repo(image_name: str, tag: str) -> bool:
     args = ["docker", "manifest", "inspect", f"us-central1-docker.pkg.dev/lavanet-public/images/{image_name}:{tag}"]
