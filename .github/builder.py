@@ -60,10 +60,7 @@ def main():
 
     # build pre-release versions
     for pre_release in pre_releases:
-        build(pre_release, f"prerelease-{pre_release}")
-
-    # build latest
-    build(latest_release, "latest")
+        build(pre_release, [f"prerelease-{pre_release}"])
 
 def build(version_tag: str, docker_tags = []):
     if len(docker_tags) == 0:
