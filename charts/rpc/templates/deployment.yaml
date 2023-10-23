@@ -109,6 +109,18 @@ spec:
           readinessProbe:
             {{- toYaml (unset $.Values.readinessProbe "enabled") | nindent 12 }}
           {{ end }}
+          {{ if $.Values.startupProbe.enabled }}
+          startupProbe:
+            {{- toYaml (unset $.Values.startupProbe "enabled") | nindent 12 }}
+          {{ else if $.Values.simpleStartupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: /block?height={{ $.Values.simpleStartupProbe.height }}
+              port: 26657
+            # check every two minutes for ~24 hours
+            failureThreshold: 40000
+            periodSeconds: 120
+          {{ end }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
