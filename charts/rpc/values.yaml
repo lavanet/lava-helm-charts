@@ -9,7 +9,7 @@ nameOverride: null
 moniker: null
 
 # number of nodes to run
-replicasCount: 1
+replicaCount: 1
 
 # chain id of lava
 chainId: "lava-testnet-2"
@@ -211,3 +211,6 @@ affinity: {}
 podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
+
+# backwards compatibility, remove if no one is using statefulsets
+useStatefulSet: false
