@@ -1,3 +1,4 @@
+{{ if not .Values.useStatefulSet }}
 {{- range $i := until (int .Values.replicaCount) }}
 ---
 apiVersion: apps/v1
@@ -166,4 +167,5 @@ spec:
             {}
           {{- end -}}
         {{- end -}}
+{{- end -}}
 {{- end -}}
