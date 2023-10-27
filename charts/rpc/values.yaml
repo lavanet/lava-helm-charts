@@ -261,14 +261,14 @@ livenessProbe:
   # successThreshold: 1
   # failureThreshold: 3
 
-# startup probe:
+# startup probe
+# start only when the rpc is at this block
 simpleStartupProbe:
   enabled: false
-  # start only when the rpc is at this block
   height: 529900
 
 startupProbe:
-  enabled: true
+  enabled: false
 
 imagePullSecrets: []
 nodeSelector: {}
