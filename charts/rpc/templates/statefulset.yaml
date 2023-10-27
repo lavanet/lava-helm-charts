@@ -1,3 +1,4 @@
+{{ if .Values.useStatefulSet }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -145,3 +146,4 @@ spec:
             optional: {{ . }}
             {{- end }}
         {{- end }}
+{{- end -}}

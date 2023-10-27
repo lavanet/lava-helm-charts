@@ -9,7 +9,7 @@ nameOverride: null
 moniker: null
 
 # number of nodes to run
-replicasCount: 1
+replicaCount: 1
 
 # chain id of lava
 chainId: "lava-testnet-2"
@@ -153,6 +153,63 @@ service:
   # override .Values.ports with these values
   ports: null
 
+# setup pvc for the node
+persistentVolume:
+  ## If true, will create/use a Persistent Volume Claim
+  ## If false, use emptyDir
+  enabled: true
+
+  ## Must match those of existing PV or dynamic provisioner
+  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  accessModes:
+    - ReadWriteOnce
+
+  ## Persistent Volume labels
+  labels: {}
+
+  ## Persistent Volume annotations
+  annotations: {}
+
+  ## Persistent Volume existing claim name
+  ## Requires persistentVolume.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+  ## Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  storageClass: null
+
+  ## Subdirectory of data Persistent Volume to mount
+  ## Useful if the volume's root directory is not empty
+  subPath: ""
+
+  ## Persistent Volume Claim Selector
+  ## Useful if Persistent Volumes have been provisioned in advance
+  ## Ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+  selector: null
+  ## ex: 
+  # selector:
+  #  matchLabels:
+  #    release: "stable"
+  #  matchExpressions:
+  #    - { key: environment, operator: In, values: [ dev ] }
+
+  ## Persistent Volume Name
+  ## Useful if Persistent Volumes have been provisioned in advance and you want to use a specific one
+  ##
+  volumeName: null
+  # volumeName: ""
+
+  volumeBindingMode: null
+
+  emptyDir:
+    ## emptyDir volume size limit
+    sizeLimit: ""
+
 # mount secrets as files, useful for mounting key file
 extraSecretMounts: []
   # - name: node-private-key
@@ -204,6 +261,15 @@ livenessProbe:
   # successThreshold: 1
   # failureThreshold: 3
 
+# startup probe
+# start only when the rpc is at this block
+simpleStartupProbe:
+  enabled: false
+  height: 542000
+
+startupProbe:
+  enabled: false
+
 imagePullSecrets: []
 nodeSelector: {}
 tolerations: []
@@ -211,3 +277,6 @@ affinity: {}
 podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
+
+# backwards compatibility, remove if no one is using statefulsets
+useStatefulSet: false
