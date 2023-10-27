@@ -39,7 +39,7 @@ spec:
         - name: download-and-install-snapshot
           image: "{{ $.Values.snapshot.image.repository }}:{{ $.Values.snapshot.image.tag }}"
           imagePullPolicy: {{ $.Values.snapshot.image.pullPolicy }}
-          command: {{ tpl ($.Values.snapshot.command | toYaml | nindent 12) . }}
+          command: {{ tpl ($.Values.snapshot.command | toYaml | nindent 12) $ }}
           volumeMounts:
             - name: data-volume
               mountPath: {{ $.Values.dataDir }}
