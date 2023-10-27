@@ -206,9 +206,9 @@ persistentVolume:
 
   volumeBindingMode: null
 
-  emptyDir:
-    ## emptyDir volume size limit
-    sizeLimit: null
+emptyDir:
+  ## emptyDir volume size limit
+  sizeLimit: null
 
 # mount secrets as files, useful for mounting key file
 extraSecretMounts:
