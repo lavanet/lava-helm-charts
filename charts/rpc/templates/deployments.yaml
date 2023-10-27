@@ -1,5 +1,5 @@
-{{ if not .Values.useStatefulSet }}
 {{- range $i := until (int .Values.replicaCount) }}
+{{- if not $.Values.useStatefulSet }}
 ---
 apiVersion: apps/v1
 kind: Deployment
