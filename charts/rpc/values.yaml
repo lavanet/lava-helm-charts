@@ -265,7 +265,7 @@ livenessProbe:
 # start only when the rpc is at this block
 simpleStartupProbe:
   enabled: false
-  height: 529900
+  height: 542000
 
 startupProbe:
   enabled: false
