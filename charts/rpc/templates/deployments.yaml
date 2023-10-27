@@ -1,0 +1,169 @@
+{{- range $i := until (int .Values.replicaCount) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rpc.fullname"  $ }}
+  labels:
+    lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  $ }}
+    lavanet.xyz/node_type: "rpc"
+    {{- include "rpc.labels" $ | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  $ }}
+      lavanet.xyz/node_type: "rpc"
+      {{- include "rpc.selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      {{- with $.Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  $ }}
+        lavanet.xyz/node_type: "rpc"
+        {{- include "rpc.selectorLabels" $ | nindent 8 }}
+    spec:
+      {{- if $.Values.serviceAccountName }}
+      serviceAccountName: {{ $.Values.serviceAccountName }}
+      {{- end }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      {{- if $.Values.snapshot.enabled }}
+      initContainers:
+        - name: download-and-install-snapshot
+          image: "{{ $.Values.snapshot.image.repository }}:{{ $.Values.snapshot.image.tag }}"
+          imagePullPolicy: {{ $.Values.snapshot.image.pullPolicy }}
+          command: {{ tpl ($.Values.snapshot.command | toYaml | nindent 12) . }}
+          volumeMounts:
+            - name: data-volume
+              mountPath: {{ $.Values.dataDir }}
+      {{- end }}
+      containers:
+        - name: {{ include "rpc.fullname"  $ }}
+          securityContext:
+            {{- toYaml $.Values.securityContext | nindent 12 }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          volumeMounts:
+          {{- range $.Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range $.Values.extraConfigMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+            - name: data-volume
+              mountPath: {{ $.Values.dataDir }}
+              subPath: "{{ $.Values.persistentVolume.subPath }}"
+          {{- with $.Values.envFrom }}
+          envFrom: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env: 
+            - name: DATA_DIR
+              value: {{ $.Values.dataDir }} 
+            - name: LOG_LEVEL
+              value: {{ $.Values.logLevel }}
+          {{- with $.Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+          {{- range $.Values.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .number }}
+              protocol: {{ .protocol }}
+          {{- end }}
+          {{- if $.Values.command }}
+          {{- with $.Values.commmand.name }}
+          command: 
+            - {{ . | quote }}
+          {{- end }}
+          {{- with $.Values.commmand.args }}
+          args:
+            {{- toYaml . | nindent 12 -}}
+          {{- end }}
+          # default command
+          {{- else }}
+          command: ["run"]
+          args: [ ]
+          {{- end }}
+          {{- with $.Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{ if $.Values.livenessProbe.enabled }}
+          livenessProbe:
+            {{- toYaml (unset $.Values.livenessProbe "enabled") | nindent 12 }}
+          {{- end }}
+          {{ if $.Values.readinessProbe.enabled }}
+          readinessProbe:
+            {{- toYaml (unset $.Values.readinessProbe "enabled") | nindent 12 }}
+          {{ end }}
+          {{ if $.Values.startupProbe.enabled }}
+          startupProbe:
+            {{- toYaml (unset $.Values.startupProbe "enabled") | nindent 12 }}
+          {{ else if $.Values.simpleStartupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: /block?height={{ $.Values.simpleStartupProbe.height }}
+              port: 26657
+            # check every two minutes for ~24 hours
+            failureThreshold: 40000
+            periodSeconds: 120
+          {{ end }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- range $.Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            {{- with .optional }}
+            optional: {{ . }}
+            {{- end }}
+        {{- end }}
+        {{- range $.Values.extraConfigMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            {{- with .optional }}
+            optional: {{ . }}
+            {{- end }}
+        {{- end }}
+        - name: data-volume
+        {{- if $.Values.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if $.Values.persistentVolume.existingClaim }}{{ $.Values.persistentVolume.existingClaim }}{{- else }} {{- include "rpc.fullname"  $ }}-data-volume-pvc-{{$i}} {{- end }}
+        {{- else }}
+          emptyDir:
+          {{- if $.Values.emptyDir.sizeLimit }}
+            sizeLimit: {{ $.Values.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
+        {{- end -}}
+{{- end -}}

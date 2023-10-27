@@ -24,7 +24,7 @@ storageSize: "500Gi"
 snapshot:
   enabled: false
   url: null
-  command: 
+  command:
     - "/bin/sh"
     - "-c"
     - |
@@ -76,7 +76,7 @@ ingress:
   host: null
   annotations: {}
   http:
-    annotations: 
+    annotations:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /$2
     paths:
@@ -97,7 +97,7 @@ ingress:
 
       - port: grpc-web
         hostPrefix: grpc-web
-        path: / 
+        path: /
         pathType: Prefix
   grpc:
     annotations:
@@ -191,7 +191,7 @@ persistentVolume:
   ## Useful if Persistent Volumes have been provisioned in advance
   ## Ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
   selector: null
-  ## ex: 
+  ## ex:
   # selector:
   #  matchLabels:
   #    release: "stable"
@@ -208,10 +208,11 @@ persistentVolume:
 
   emptyDir:
     ## emptyDir volume size limit
-    sizeLimit: ""
+    sizeLimit: null
 
 # mount secrets as files, useful for mounting key file
-extraSecretMounts: []
+extraSecretMounts:
+  []
   # - name: node-private-key
   #   mountPath: /data
   #   subPath: /keychain/node-private-key
@@ -219,7 +220,8 @@ extraSecretMounts: []
   #   readOnly: true
 
 # mount config as files, useful for mounting the config file
-extraConfigMounts: []
+extraConfigMounts:
+  []
   # - name: node-config
   #   mountPath: /data
   #   subPath: /data/node-config.toml
