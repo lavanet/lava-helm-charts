@@ -4,7 +4,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "rpc.fullname"  $ }}-{{ $i }}
+  name: {{ include "rpc.fullname" $ }}-{{ $i }}
   labels:
     lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  $ }}
     lavanet.xyz/node_type: "rpc"
