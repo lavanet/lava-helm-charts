@@ -2,7 +2,6 @@
 {{- $keySecretKey := required ".Values.key.secretKey is required." .Values.key.secretKey -}}
 {{- $keyPasswordSecretName := required ".Values.key.passwordSecretName is required." .Values.key.passwordSecretName -}}
 {{- $keyPasswordSecretKey := required ".Values.key.passwordSecretKey is required." .Values.key.passwordSecretKey -}}
-{{- $endpoint := required ".Values.endpoint is required." .Values.endpoint -}}
 {{- $supportedChainIds := required ".Values.supportedChainIds is required." .Values.supportedChainIds -}}
 {{- $rpcNodeUrl := required ".Values.rpcNodeUrl is required." .Values.rpcNodeUrl -}}
 {{- $configFilePath := default "/consumer_config.yaml" .Values.configFilePath  -}}
@@ -171,7 +170,6 @@ spec:
                 - "{{ $rpcNodeUrl }}"
                 - --from
                 - {{ include "consumer.keyname" . | quote }}
-                - --endpoints
                 - "{{- range .Values.supportedChainIds -}}{{ $.Values.endpoint }}:443,{{ . }} {{ end }}"
             {{- toYaml (unset .Values.defaultLivenessProbe "enabled") | nindent 12 }}
           {{ else if .Values.customLivenessProbe.enabled }}

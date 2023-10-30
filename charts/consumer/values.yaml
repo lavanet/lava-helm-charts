@@ -33,12 +33,6 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
-# REQUIRED: the endpoint the node will expose, this is the endpoint that the node will listen on
-# note: this should match your ingress config
-## example
-# endpoint: lava-consumer.example.com
-endpoint: null
-
 # REQUIRED: the chain ids for the chains the node will serve
 ## example
 # supportedChainIds: ["ETH1", "COS3"]
@@ -85,29 +79,7 @@ ingress:
 # config for the node
 ## example
 # configYaml: |
-#   endpoints:
-#     - api-interface: tendermintrpc
-#       chain-id: LAV1
-#       network-address:
-#         address: 0.0.0.0:2224
-#         disable-tls: true
-#       node-urls:
-#         - url: ws://127.0.0.1:26657/websocket
-#         - url: http://127.0.0.1:26657
-#     - api-interface: grpc
-#       chain-id: LAV1
-#       network-address:
-#         address: 0.0.0.0:2224
-#         disable-tls: true
-#       node-urls:
-#         url: 127.0.0.1:9090
-#     - api-interface: rest
-#       chain-id: LAV1
-#       network-address:
-#         address: 0.0.0.0:2224
-#         disable-tls: true
-#       node-urls:
-#         url: http://127.0.0.1:1317
+# TODO:
 
 # note: This will create a new configMap.
 # If you want to use an existing configMap, or secret use `extraSecretMounts` or `extraConfigMounts`
@@ -242,7 +214,7 @@ resources:
 # override the start command to start the consumer
 command: null
 
-# enable default readiness, using `endpoint` and `supportedChainIds`
+# enable default readiness
 defaultReadinessProbe:
   enabled: true
   initialDelaySeconds: 30
@@ -251,7 +223,7 @@ defaultReadinessProbe:
   successThreshold: 1
   failureThreshold: 10
 
-# enable default readiness, using `endpoint` and `supportedChainIds`
+# enable default readiness
 defaultLivenessProbe:
   enabled: true
   initialDelaySeconds: 60

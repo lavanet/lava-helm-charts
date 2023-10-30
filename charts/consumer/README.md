@@ -30,4 +30,40 @@ Please see our [docs](https://docs.lavanet.xyz/consumer-setup) for more informat
 
 The `configYaml` section in the [/examples/consumer/values.example.yaml](/examples/consumer/values.example.yaml) file has an example config for a consumer that works on `LAV1`
 
-## TODO
+## 2. Create a staking transaction for the consumer
+
+Once you deploy the consumer into kubernetes using the helm file, and the deployment is marked as ready and running by kubernetes you can stake your consumer.
+
+```bash
+lavad tx pairing stake-client [chain-id] [amount] [geolocation] [flags]
+```
+
+_Check the output for the status of the staking operation. A successful operation will have a code **`0`**._
+
+#### Parameters Description
+
+- **`chain-id`** - The ID of the serviced chain (e.g., **`COS4`** or **`FTM250`**).
+- **`amount`** - Stake amount for the specific chain (e.g., **`2010ulava`**).
+- **`geolocation`** - Indicates the geographical location where the process is located (e.g., **`1`** for US or **`2`** for EU).
+
+#### Geolocations
+
+```javascript
+USC = 1; // US-Center
+EU = 2; // Europe
+USE = 4; // US-East
+USW = 8; // US-West
+AF = 16; // Africa
+AS = 32; // Asia
+AU = 64; // (Australia, includes NZ)
+GL = 65535; // Global
+```
+
+#### Flags Details
+
+- **`--from`** - The account to be used for the consumer staking (e.g., **`my_account`**).
+- **`--keyring-backend`** - A keyring-backend of your choosing (e.g., **`test`**).
+- **`--chain-id`** - The chain_id of the network (e.g., **`lava-testnet-2`**).
+- **`--gas`** - The gas limit for the transaction (e.g., **`"auto"`**).
+- **`--gas-adjustment`** - The gas adjustment factor (e.g., **`"1.5"`**).
+- **`--node`** - A RPC node for Lava (e.g., **`https://public-rpc-testnet2.lavanet.xyz:443/rpc/`**).

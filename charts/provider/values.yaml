@@ -37,12 +37,6 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
-# REQUIRED: the endpoint the node will expose, this is the endpoint that the node will listen on
-# note: this should match your ingress config
-## example
-# endpoint: lava-provider.example.com
-endpoint: null
-
 # REQUIRED: the chain ids for the chains the node will serve
 ## example
 # supportedChainIds: ["ETH1", "COS3"]
