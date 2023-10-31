@@ -28,6 +28,7 @@ spec:
       labels:
         lavanet.xyz/node_moniker:  {{ include "rpc.moniker"  $ }}
         lavanet.xyz/node_type: "rpc"
+        kubernetes.io/deployment: {{ include "rpc.fullname" $ }}-{{ $i }}
         {{- include "rpc.selectorLabels" $ | nindent 8 }}
     spec:
       {{- if $.Values.serviceAccountName }}
