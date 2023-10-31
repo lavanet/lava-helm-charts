@@ -120,9 +120,9 @@ spec:
             httpGet:
               path: /block?height={{ $.Values.simpleStartupProbe.height }}
               port: 26657
-            # check every two minutes for ~24 hours
-            failureThreshold: 40000
-            periodSeconds: 120
+            # check every 10 seconds for ~24 hours
+            failureThreshold: 12000
+            periodSeconds: 10
           {{ end }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
