@@ -58,7 +58,9 @@ snapshot:
       fi
 
       {{- if .Values.genesisJson }}
-      curl -sSL "{{ .Values.genesisJson }}" -o "$RPC_DATA_DIR/config/genesis.json"
+      if [ ! -f "$RPC_DATA_DIR/config/genesis.json" ]; then
+        curl -sSL "{{ .Values.genesisJson }}" -o "$RPC_DATA_DIR/config/genesis.json"
+      fi
       {{- end }}
   image:
     repository: us-central1-docker.pkg.dev/lavanet-public/images/snapshot-extractor
