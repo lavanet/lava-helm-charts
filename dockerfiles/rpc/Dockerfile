@@ -34,7 +34,7 @@ RUN curl -L https://raw.githubusercontent.com/lavanet/lava-config/main/testnet-2
 ###############################################################################
 FROM debian:stable-slim
 
-WORKDIR app
+WORKDIR /app
 
 RUN apt-get update && apt-get install -y ca-certificates
 

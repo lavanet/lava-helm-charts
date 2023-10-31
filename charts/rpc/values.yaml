@@ -20,6 +20,9 @@ dataDir: "/data"
 # set the volume storage size
 storageSize: "500Gi"
 
+# set if using a custom genesis.json
+genesisJson: null
+
 # use snapshot for downloading the chain
 snapshot:
   enabled: false
@@ -53,6 +56,10 @@ snapshot:
       else
         echo "RPC data directory is not empty, skipping snapshot download"
       fi
+
+      {{- if .Values.genesisJson }}
+      curl -sSL "{{ .Values.genesisJson }}" -o "$RPC_DATA_DIR/config/genesis.json"
+      {{- end }}
   image:
     repository: us-central1-docker.pkg.dev/lavanet-public/images/snapshot-extractor
     tag: "latest"
