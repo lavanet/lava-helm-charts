@@ -245,10 +245,10 @@ extraConfigMounts:
 # resource limits for the node
 resources:
   requests:
-    cpu: "200m"
-    memory: 2Gi
+    cpu: "300m"
+    memory: 4Gi
   limits:
-    memory: 8Gi
+    memory: 16Gi
 
 # override the start command to start the rpc
 command: null
