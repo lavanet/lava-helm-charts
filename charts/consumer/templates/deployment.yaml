@@ -118,11 +118,16 @@ spec:
           {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.service.customPorts }}
+          ports:
+            {{- toYaml .Values.service.customPorts | nindent 12 }}
+          {{- else }}
           ports:
           {{ range $i, $endpoint := .Values.endpoints }}
-            - name: {{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}
+            - name: {{ lower (index $endpoint "chain-id") }}-{{ lower (index $endpoint "api-interface") }}
               containerPort: {{ add 5000 $i }}
               protocol: TCP
+          {{- end }}
           {{- end }}
           {{- if .Values.command }}
           {{- with .Values.command.name }}

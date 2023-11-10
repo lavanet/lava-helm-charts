@@ -21,7 +21,7 @@ spec:
   tls:
     - hosts:
       {{ range .Values.endpoints }}
-        - {{ default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface") }} 
+        - {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface")) }} 
       {{- end }}
       secretName: {{ $.Values.ingress.simple.tlsSecretName }}
   {{- end }}
@@ -31,16 +31,16 @@ spec:
   {{- else }}
   rules:
     {{ range $i, $endpoint := .Values.endpoints }}
-    - host: {{ default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface") }} 
+    - host: {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface")) }} 
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name:  '{{- include "consumer.fullname" . }}'
+                name:  '{{- include "consumer.fullname" $ }}'
                 port:
-                  name: "{{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}"
+                  name: "{{ lower (index $endpoint "chain-id") }}-{{ lower (index $endpoint "api-interface") }}"
     {{- end }}
   {{- end }}
 {{- end }}

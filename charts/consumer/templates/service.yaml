@@ -18,16 +18,17 @@ metadata:
     {{- include "consumer.labels" . | nindent 4 }}
 spec:
   type:  {{ .Values.service.type }}
-  {{- with .Values.service.customPorts }}
+  {{- if .Values.service.customPorts }}
   ports:
-    {{- toYaml . | nindent 4 }}
+    {{- toYaml .Values.service.customPorts | nindent 4 }}
   {{ else }}
   ports:
   {{ range $i, $endpoint := .Values.endpoints }}
-    - name: {{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}
+    - name: {{ lower (index $endpoint "chain-id") }}-{{ lower (index $endpoint "api-interface") }}
       port: {{ add 5000 $i }}
       protocol: TCP
       targetPort: {{ add 5000 $i }}
+  {{- end }}
   {{- end }}
   selector:
     lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}

@@ -133,18 +133,14 @@ image:
 # set service account name
 serviceAccountName: null
 
-# overrride the ports used in deployment
-# if this is not set, will use ports from endpoints
-customPorts: null
-
 # service settings
 service:
   enabled: true
   name: null
   type: ClusterIP
   annotations: {}
-  # override .Values.port with these values
-  ports: null
+  # if not set we will create ports for the service using endpoints
+  customPorts: null
 
 # mount secrets as files, useful for mounting key file
 extraSecretMounts:
