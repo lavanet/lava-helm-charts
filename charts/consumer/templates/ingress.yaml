@@ -14,12 +14,33 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
-  {{- if .Values.ingress.tls }}
+  {{- if (and .Values.ingress.custom.enabled .Values.ingress.custom.tls) }}
   tls:
-    {{- tpl (toYaml .Values.ingress.tls | nindent 4) . }}
+    {{- tpl (toYaml .Values.ingress.custom.tls | nindent 4) . }}
+  {{- else }}
+  tls:
+    - hosts:
+      {{ range (fromYaml .Values.configYaml).endpoints }}
+        - '{{ index . "chain-id" }}-{{ index . "api-interface" }}.{{ $.Values.ingress.simple.baseHost }}'
+      {{- end }}
+      secretName: {{ $.Values.ingress.simple.tlsSecretName }}
   {{- end }}
-  {{-  if .Values.ingress.rules }}
+  {{- if (and .Values.ingress.custom.enabled .Values.ingress.custom.rules) }}
   rules:
-    {{- tpl (toYaml .Values.ingress.rules | nindent 4) . }}
+    {{- tpl (toYaml .Values.ingress.custom.rules | nindent 4) . }}
+  {{- else }}
+  rules:
+    {{ range $i, $endpoint := (fromYaml .Values.configYaml).endpoints }}
+    - host: '{{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}.{{ $.Values.ingress.simple.baseHost }}'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name:  '{{- include "consumer.fullname" . }}'
+                port:
+                  name: "consumer-port-{{ $i }}"
+    {{- end }}
   {{- end }}
 {{- end }}

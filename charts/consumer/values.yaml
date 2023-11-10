@@ -33,11 +33,6 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
-# REQUIRED: the chain ids for the chains the node will serve
-## example
-# supportedChainIds: ["ETH1", "COS3"]
-supportedChainIds: null
-
 # Set your geolocation
 ## Geolocation codes
 #  USC = 1; // US-Center
@@ -50,28 +45,46 @@ supportedChainIds: null
 #  GL = 65535; // Global
 geolocation: "1"
 
-# setup ingress for the node
-# example:
+### setup ingress for the node
+## custom example:
 # ingress:
 #  enabled: true
-#  tls:
-#    - secretName: lava-consumer-tls
-#      hosts:
-#        - lava-consumer.example.com
-#  rules:
-#    - host: lava-consumer.example.com
-#      http:
-#        paths:
-#          - path: /
-#            backend:
-#              serviceName: lava-consumer
-#              servicePort: 5000
+#   custom:
+#     enabled: true
+#     tls:
+#       - secretName: lava-consumer-tls
+#         hosts:
+#           - lava-consumer.example.com
+#     rules:
+#       - host: lava-consumer.example.com
+#         http:
+#           paths:
+#             - path: /
+#               backend:
+#                 serviceName: lava-consumer
+#                 servicePort: 5000
 #  annotations: {}
+#
+## simple example:
+# ingress:
+#  enabled: true
+#  simple:
+#    enabled: true
+#    baseHost: lava-consumer.example.com
+#    tlsSecretName: lava-consumer-tls
+#  annotations: {}
+
 ingress:
-  enabled: true
+  enabled: false
+  simple:
+    enabled: false
+    baseHost: null
+    tlsSecretName: null
+  custom:
+    enabled: false
+    tls: []
+    rules: []
   className: "nginx"
-  tls: []
-  rules: []
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
@@ -79,11 +92,18 @@ ingress:
 # config for the node
 ## example
 # configYaml: |
-# TODO:
+#   endpoints:
+#     - chain-id: COS5
+#       api-interface: rest
+#       network-address: 0.0.0.0:30016
+#     - chain-id: COS5
+#       api-interface: tendermintrpc
+#       network-address: 0.0.0.0:30015
+#     - chain-id: COS5
+#       api-interface: grpc
+#       network-address: 0.0.0.0:30028
 
 # note: This will create a new configMap.
-# If you want to use an existing configMap, or secret use `extraSecretMounts` or `extraConfigMounts`
-# and set `configFilePath`
 configYaml: null
 
 # add custom environment variables to the node using secret of configs
