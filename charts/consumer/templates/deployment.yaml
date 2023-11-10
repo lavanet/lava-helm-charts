@@ -119,9 +119,11 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
-            - name: {{ .Values.port.name }}
-              containerPort: {{ .Values.port.number }}
-              protocol: {{ .Values.port.protocol }}
+          {{ range $i, $endpoint := .Values.endpoints }}
+            - name: {{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}
+              containerPort: {{ add 5000 $i }}
+              protocol: TCP
+          {{- end }}
           {{- if .Values.command }}
           {{- with .Values.command.name }}
           command: 

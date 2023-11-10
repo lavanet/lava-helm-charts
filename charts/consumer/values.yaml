@@ -33,6 +33,18 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
+# the chains and interfaces your consumer will support
+## example
+# endpoints:
+#   - chain-id: COS5
+#     api-interface: rest
+#     network-address: cos5-rest-consumer1.example.com
+#   - chain-id: COS5
+#     api-interface: tendermintrpc
+#   - chain-id: COS5
+#     api-interface: grpc
+endpoints: []
+
 # Set your geolocation
 ## Geolocation codes
 #  USC = 1; // US-Center
@@ -89,7 +101,7 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
-# config for the node
+# use a custom configYaml for the node
 ## example
 # configYaml: |
 #   endpoints:
@@ -118,14 +130,12 @@ image:
   pullPolicy: Always
   tag: latest
 
-# port to expose the node on
-port:
-  name: default
-  number: 2224
-  protocol: TCP
-
 # set service account name
 serviceAccountName: null
+
+# overrride the ports used in deployment
+# if this is not set, will use ports from endpoints
+customPorts: null
 
 # service settings
 service:

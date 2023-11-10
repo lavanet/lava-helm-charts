@@ -20,8 +20,8 @@ spec:
   {{- else }}
   tls:
     - hosts:
-      {{ range (fromYaml .Values.configYaml).endpoints }}
-        - '{{ index . "chain-id" }}-{{ index . "api-interface" }}.{{ $.Values.ingress.simple.baseHost }}'
+      {{ range .Values.endpoints }}
+        - {{ default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface") }} 
       {{- end }}
       secretName: {{ $.Values.ingress.simple.tlsSecretName }}
   {{- end }}
@@ -30,8 +30,8 @@ spec:
     {{- tpl (toYaml .Values.ingress.custom.rules | nindent 4) . }}
   {{- else }}
   rules:
-    {{ range $i, $endpoint := (fromYaml .Values.configYaml).endpoints }}
-    - host: '{{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}.{{ $.Values.ingress.simple.baseHost }}'
+    {{ range $i, $endpoint := .Values.endpoints }}
+    - host: {{ default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface") }} 
       http:
         paths:
           - path: /
@@ -40,7 +40,7 @@ spec:
               service:
                 name:  '{{- include "consumer.fullname" . }}'
                 port:
-                  name: "consumer-port-{{ $i }}"
+                  name: "{{ index $endpoint "chain-id" }}-{{ index $endpoint "api-interface" }}"
     {{- end }}
   {{- end }}
 {{- end }}
