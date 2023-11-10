@@ -2,7 +2,6 @@
 {{- $keySecretKey := required ".Values.key.secretKey is required." .Values.key.secretKey -}}
 {{- $keyPasswordSecretName := required ".Values.key.passwordSecretName is required." .Values.key.passwordSecretName -}}
 {{- $keyPasswordSecretKey := required ".Values.key.passwordSecretKey is required." .Values.key.passwordSecretKey -}}
-{{- $supportedChainIds := required ".Values.supportedChainIds is required." .Values.supportedChainIds -}}
 {{- $rpcNodeUrl := required ".Values.rpcNodeUrl is required." .Values.rpcNodeUrl -}}
 {{- $configFilePath := "/consumer_config.yaml" -}}
 ---
@@ -134,7 +133,7 @@ spec:
           {{- end }}
           # default command
           {{- else }}
-          command: ["lavad"]
+          command: ["lavap"]
           args: [
             "rpcconsumer", "{{ $configFilePath }}", 
             "--from", "{{- include "consumer.keyname" . }}",
@@ -154,7 +153,7 @@ spec:
           livenessProbe:
             exec:
               command: 
-                - lavad
+                - lavap
                 - test
                 - rpcconsumer
                 - "--home"
@@ -167,7 +166,6 @@ spec:
                 - "{{ $rpcNodeUrl }}"
                 - --from
                 - {{ include "consumer.keyname" . | quote }}
-                - "{{- range .Values.supportedChainIds -}}{{ $.Values.endpoint }}:443,{{ . }} {{ end }}"
             {{- toYaml (unset .Values.defaultLivenessProbe "enabled") | nindent 12 }}
           {{ else if .Values.customLivenessProbe.enabled }}
           livenessProbe:
@@ -177,7 +175,7 @@ spec:
           readinessProbe:
             exec:
               command: 
-                - lavad
+                - lavap
                 - test
                 - rpcconsumer
                 - "--home"
@@ -191,7 +189,6 @@ spec:
                 - --from
                 - {{ include "consumer.keyname" . | quote }}
                 - --endpoints
-                - "{{- range .Values.supportedChainIds -}}{{ $.Values.endpoint }}:443,{{ . }} {{ end }}"
             {{- toYaml (unset .Values.defaultReadinessProbe "enabled") | nindent 12 }}
           {{ else if .Values.customReadinessProbe.enabled }}
           readinessProbe:
