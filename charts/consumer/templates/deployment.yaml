@@ -4,10 +4,7 @@
 {{- $keyPasswordSecretKey := required ".Values.key.passwordSecretKey is required." .Values.key.passwordSecretKey -}}
 {{- $supportedChainIds := required ".Values.supportedChainIds is required." .Values.supportedChainIds -}}
 {{- $rpcNodeUrl := required ".Values.rpcNodeUrl is required." .Values.rpcNodeUrl -}}
-{{- $configFilePath := default "/consumer_config.yaml" .Values.configFilePath  -}}
-{{- if (eq $configFilePath "/consumer_config.yaml" ) }}
-  {{- $_ := required "You must either set .Values.configFilePath OR .Values.configYaml" .Values.configYaml -}}
-{{- end }}
+{{- $configFilePath := "/consumer_config.yaml" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment

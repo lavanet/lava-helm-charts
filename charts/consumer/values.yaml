@@ -86,12 +86,6 @@ ingress:
 # and set `configFilePath`
 configYaml: null
 
-# the path to the config file
-# If you are using `extraConfigMounts` or `extraSecretMounts`, provide the path to the config file
-## example:
-# configFilePath: /data/node-config.toml
-configFilePath: null
-
 # add custom environment variables to the node using secret of configs
 envFrom: []
 
