@@ -35,29 +35,10 @@ The `configYaml` section in the [/examples/consumer/values.example.yaml](/exampl
 Once you deploy the consumer into kubernetes using the helm file, and the deployment is marked as ready and running by kubernetes you can stake your consumer.
 
 ```bash
-lavad tx pairing stake-client [chain-id] [amount] [geolocation] [flags]
+lavad tx subscription buy [plan-namel] [address] [flags]
 ```
 
 _Check the output for the status of the staking operation. A successful operation will have a code **`0`**._
-
-#### Parameters Description
-
-- **`chain-id`** - The ID of the serviced chain (e.g., **`COS4`** or **`FTM250`**).
-- **`amount`** - Stake amount for the specific chain (e.g., **`2010ulava`**).
-- **`geolocation`** - Indicates the geographical location where the process is located (e.g., **`1`** for US or **`2`** for EU).
-
-#### Geolocations
-
-```javascript
-USC = 1; // US-Center
-EU = 2; // Europe
-USE = 4; // US-East
-USW = 8; // US-West
-AF = 16; // Africa
-AS = 32; // Asia
-AU = 64; // (Australia, includes NZ)
-GL = 65535; // Global
-```
 
 #### Flags Details
 
