@@ -87,6 +87,7 @@ def build(version_tag: str, docker_tags=[]):
     images = [
         ["rpc", "lava-rpc"],
         ["provider", "lava-provider"],
+        ["consumer", "lava-consumer"],
         ["lavad", "lavad"],
         ["lavap", "lavap"],
         ["lavavisor", "lavavisor"],
