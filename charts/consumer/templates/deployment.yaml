@@ -144,13 +144,13 @@ spec:
           args: [
             "pod",
             "--cmd",
-            'lavap rpcconsumer {{ $configFilePath }} \
-              --from {{- include "consumer.keyname" . }} \ 
-              --home {{ .Values.persistentVolume.mountPath }} \
-              --keyring-backend "test" \ 
-              --keyring-dir {{ .Values.persistentVolume.mountPath }} \
-              --geolocation {{.Values.geolocation}} \
-              --node {{ $rpcNodeUrl }} \
+            'lavap rpcconsumer {{ $configFilePath }}
+              --from {{ include "consumer.keyname" . }}
+              --home {{ .Values.persistentVolume.mountPath }}
+              --keyring-backend test
+              --keyring-dir {{ .Values.persistentVolume.mountPath }}
+              --geolocation {{.Values.geolocation}}
+              --node {{ $rpcNodeUrl }}
               --chain-id {{.Values.chainId}}',
             --directory,
             "{{ .Values.persistentVolume.mountPath }}",
