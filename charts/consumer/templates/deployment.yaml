@@ -140,16 +140,20 @@ spec:
           {{- end }}
           # default command
           {{- else }}
-          command: ["lavap"]
+          command: ["lavavisor"]
           args: [
-            "rpcconsumer", "{{ $configFilePath }}", 
-            "--from", "{{- include "consumer.keyname" . }}",
-            "--home",  "{{ .Values.persistentVolume.mountPath }}", 
-            "--keyring-backend", "test",
-            "--keyring-dir",  "{{ .Values.persistentVolume.mountPath }}",
-            "--geolocation", "{{.Values.geolocation}}",
-            "--node", "{{ $rpcNodeUrl }}",
-            "--chain-id", "{{.Values.chainId}}"
+            "pod",
+            "--cmd",
+            'lavap rpcconsumer {{ $configFilePath }} \
+              --from {{- include "consumer.keyname" . }} \ 
+              --home {{ .Values.persistentVolume.mountPath }} \
+              --keyring-backend "test" \ 
+              --keyring-dir {{ .Values.persistentVolume.mountPath }} \
+              --geolocation {{.Values.geolocation}} \
+              --node {{ $rpcNodeUrl }} \
+              --chain-id {{.Values.chainId}}',
+            --directory,
+            "{{ .Values.persistentVolume.mountPath }}"
           ]
           {{- end }}
           {{- with .Values.resources }}
