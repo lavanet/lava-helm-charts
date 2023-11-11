@@ -55,9 +55,6 @@ snapshot:
 
         rm -rf "$TMP_DIR"
 
-        # initialize cosmovisor
-        cosmovisor init $(which lavad)
-
         echo $(date) >> "$SNAPSHOT_COMPLETE_FILE"
       else
         echo "RPC data directory is not empty, skipping snapshot download"

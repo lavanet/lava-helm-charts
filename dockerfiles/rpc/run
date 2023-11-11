@@ -34,5 +34,10 @@ if [ ! -f "$DATA_DIR/config/genesis.json" ]; then
   cosmovisor init $(which lavad)
 fi
 
+# init cosmovisor if not already donej
+if [ ! -d "$DATA_DIR/config/cosmovisor" ]; then
+  cosmovisor init $(which lavad)
+fi
+
 echo "Running RPC node"
 cosmovisor run start --home=$DATA_DIR --p2p.seeds $SEED_NODES
