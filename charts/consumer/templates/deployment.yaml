@@ -124,7 +124,7 @@ spec:
           {{- else }}
           ports:
           {{ range $i, $endpoint := .Values.endpoints }}
-            - name: {{ lower (index $endpoint "chain-id") }}-{{ lower (index $endpoint "api-interface") }}
+            - name: {{ trunc 15 (lower (print (index $endpoint "chain-id") "-" (index $endpoint "api-interface"))) }}
               containerPort: {{ add 5000 $i }}
               protocol: TCP
           {{- end }}

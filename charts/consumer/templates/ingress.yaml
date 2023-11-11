@@ -40,7 +40,7 @@ spec:
               service:
                 name:  '{{- include "consumer.fullname" $ }}'
                 port:
-                  name: "{{ lower (index $endpoint "chain-id") }}-{{ lower (index $endpoint "api-interface") }}"
+                  name: {{ trunc 15 (lower (print (index $endpoint "chain-id") "-" (index $endpoint "api-interface"))) }}
     {{- end }}
   {{- end }}
 {{- end }}
