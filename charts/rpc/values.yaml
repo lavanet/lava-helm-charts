@@ -42,6 +42,7 @@ snapshot:
       mkdir -p "$RPC_DATA_DIR/db"
       mkdir -p "$RPC_DATA_DIR/data"
       mkdir -p "$RPC_DATA_DIR/config"
+      mkdir -p "$RPC_DATA_DIR/cosmovisor"
 
       if [ ! -f "$SNAPSHOT_COMPLETE_FILE" ]; then
         mkdir -p "$TMP_DIR"
@@ -53,9 +54,14 @@ snapshot:
         echo "[$(date)] extraction complete"
 
         rm -rf "$TMP_DIR"
+
+        # initialize cosmovisor
+        cosmovisor init $(which lavad)
+
         echo $(date) >> "$SNAPSHOT_COMPLETE_FILE"
       else
         echo "RPC data directory is not empty, skipping snapshot download"
+        echo $SNAPSHOT_COMPLETE_FILE
       fi
 
       {{- if .Values.genesisJson }}
