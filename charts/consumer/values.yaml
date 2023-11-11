@@ -45,6 +45,9 @@ key:
 #     api-interface: grpc
 endpoints: []
 
+# use lavavisor or control versions directly with docker images
+lavavisor: true
+
 # Set your geolocation
 ## Geolocation codes
 #  USC = 1; // US-Center
