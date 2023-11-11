@@ -40,7 +40,7 @@ snapshot:
       SNAPSHOT_COMPLETE_FILE="$RPC_DATA_DIR/db/snapshot_extraction_complete"
 
       mkdir -p "$RPC_DATA_DIR/db"
-      mkdir -p "$RPC_DATA_DIR/data"
+      mkdir -p "$RPC_DATA_DIR/data/config"
 
       if [ ! -f "$SNAPSHOT_COMPLETE_FILE" ]; then
         mkdir -p "$TMP_DIR"
