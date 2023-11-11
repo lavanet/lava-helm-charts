@@ -31,7 +31,6 @@ if [ ! -f "$DATA_DIR/config/genesis.json" ]; then
   cp /app/data/config/* $DATA_DIR/config/
 
   mkdir -p $DATA_DIR/data
-  cosmovisor init $(which lavad)
 fi
 
 # init cosmovisor if not already donej
