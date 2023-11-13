@@ -101,12 +101,12 @@ ingress:
     paths:
       - port: rest
         hostPrefix: ""
-        path: /rest/(.*)
+        path: /rest/(.*)/
         pathType: ImplementationSpecific
 
       - port: rest
         hostPrefix: ""
-        path: /rest/(.*)/
+        path: /rest/(.*)
         pathType: ImplementationSpecific
 
       - port: rpc
