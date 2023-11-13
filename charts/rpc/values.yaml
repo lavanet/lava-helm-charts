@@ -98,17 +98,9 @@ ingress:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /$2
       nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        rewrite ^/(rpc|rest)(/.*)$ $2 break;
     paths:
-      - port: rpc
-        hostPrefix: ""
-        path: /rpc(/|$)(.*)
-        pathType: ImplementationSpecific
-
-      - port: rest
-        hostPrefix: ""
-        path: /rest(/|$)(.*)
-        pathType: ImplementationSpecific
-
       - port: rpc
         hostPrefix: ""
         path: /
