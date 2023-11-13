@@ -1,14 +1,17 @@
 ---
-{{ if .Values.ingress.enabled -}}
+{{ if (and .Values.ingress.enabled (or .Values.ingress.simple.enabled .Values.ingress.custom.enabled)) -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "consumer.fullname"  . }}
+  name: {{ include "consumer.fullname"  . }}-grpc
   labels:
     {{- include "consumer.labels" . | nindent 4 }}
     lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}    
     lavanet.xyz/node_type: "consumer"
   annotations:
+    {{- with .Values.ingress.grpc.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -21,7 +24,9 @@ spec:
   tls:
     - hosts:
       {{ range .Values.endpoints }}
-        - {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface")) }} 
+      {{ if eq (index . "api-interface") "grpc" }}
+        - {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) .url ) }} 
+      {{- end }}
       {{- end }}
       secretName: {{ $.Values.ingress.simple.tlsSecretName }}
   {{- end }}
@@ -31,7 +36,8 @@ spec:
   {{- else }}
   rules:
     {{ range $i, $endpoint := .Values.endpoints }}
-    - host: {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) (index . "network-interface")) }} 
+    {{ if eq (index $endpoint "api-interface") "grpc" }}
+    - host: {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) .url ) }} 
       http:
         paths:
           - path: /
@@ -41,6 +47,7 @@ spec:
                 name:  '{{- include "consumer.fullname" $ }}'
                 port:
                   name: {{ trunc 15 (lower (print (index $endpoint "chain-id") "-" (index $endpoint "api-interface"))) }}
+    {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}

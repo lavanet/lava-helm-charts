@@ -38,7 +38,7 @@ key:
 # endpoints:
 #   - chain-id: COS5
 #     api-interface: rest
-#     network-address: cos5-rest-consumer1.example.com
+#     url: cos5-rest-consumer1.example.com
 #   - chain-id: COS5
 #     api-interface: tendermintrpc
 #   - chain-id: COS5
@@ -100,9 +100,14 @@ ingress:
     tls: []
     rules: []
   className: "nginx"
+  http:
+    annotations:
+      {}
+  grpc:
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
 # use a custom configYaml for the node
 ## example
