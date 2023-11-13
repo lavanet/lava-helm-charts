@@ -101,11 +101,6 @@ ingress:
     paths:
       - port: rpc
         hostPrefix: ""
-        path: /
-        pathType: Prefix
-
-      - port: rpc
-        hostPrefix: ""
         path: /rpc(/|$)(.*)
         pathType: ImplementationSpecific
 
@@ -113,6 +108,11 @@ ingress:
         hostPrefix: ""
         path: /rest(/|$)(.*)
         pathType: ImplementationSpecific
+
+      - port: rpc
+        hostPrefix: ""
+        path: /
+        pathType: Prefix
 
       - port: grpc-web
         hostPrefix: grpc-web
