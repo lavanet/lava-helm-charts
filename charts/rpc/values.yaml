@@ -102,22 +102,22 @@ ingress:
       - port: rest
         hostPrefix: ""
         path: /rest/(.*)
-        pathType: ImplementationSpecific
+        pathType: Prefix
 
       - port: rpc
         hostPrefix: ""
         path: /rpc/(.*)
-        pathType: ImplementationSpecific
+        pathType: Prefix
 
       - port: rpc
         hostPrefix: ""
         path: /rpc(/|$)
-        pathType: ImplementationSpecific
+        pathType: Prefix
 
       - port: rpc
         hostPrefix: ""
         path: /(.*)
-        pathType: ImplementationSpecific
+        pathType: Prefix
 
       - port: grpc-web
         hostPrefix: grpc-web
