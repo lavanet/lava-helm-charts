@@ -98,7 +98,8 @@ ingress:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/configuration-snippet: |
-        rewrite ^/(rpc|rest)(/.*)$ $2 break;
+        rewrite ^/(rpc)(/.*)$ $2 break;
+        rewrite ^/(rest)(/.*)$ $2 break;
     paths:
       - port: rpc
         hostPrefix: ""
