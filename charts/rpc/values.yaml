@@ -111,6 +111,10 @@ ingress:
 
       - port: rpc
         hostPrefix: ""
+        path: /rpc
+
+      - port: rpc
+        hostPrefix: ""
         path: /(.*)
         pathType: Prefix
 
