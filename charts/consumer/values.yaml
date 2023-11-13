@@ -239,7 +239,7 @@ command: null
 
 # enable default readiness
 defaultReadinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -248,7 +248,7 @@ defaultReadinessProbe:
 
 # enable default readiness
 defaultLivenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 60
   periodSeconds: 10
   timeoutSeconds: 5

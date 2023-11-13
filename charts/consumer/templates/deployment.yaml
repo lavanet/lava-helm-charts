@@ -189,9 +189,15 @@ spec:
                 - "{{ .Values.persistentVolume.mountPath }}"
                 - "--node"
                 - "{{ $rpcNodeUrl }}"
+                - "--chain-id"
+                - '{{.Values.chainId}}'
                 - --from
                 - {{ include "consumer.keyname" . | quote }}
-                - {{ range $i, $endpoint := .Values.endpoints }} http://0.0.0.0:{{ add 5000 $i }} {{ (index $endpoint "chain-id") }} {{ (index $endpoint "api-interface") }} {{ end }}
+                {{- range $i, $endpoint := .Values.endpoints }} 
+                - http://0.0.0.0:{{ add 5000 $i }} 
+                - {{ (index $endpoint "chain-id") }} 
+                - {{ (index $endpoint "api-interface") }} 
+                {{- end }}
             {{- toYaml (unset .Values.defaultLivenessProbe "enabled") | nindent 12 }}
           {{ else if .Values.customLivenessProbe.enabled }}
           livenessProbe:
@@ -212,9 +218,15 @@ spec:
                 - "{{ .Values.persistentVolume.mountPath }}"
                 - "--node"
                 - "{{ $rpcNodeUrl }}"
+                - "--chain-id"
+                - '{{.Values.chainId}}'
                 - --from
                 - {{ include "consumer.keyname" . | quote }}
-                - {{ range $i, $endpoint := .Values.endpoints }} http://0.0.0.0:{{ add 5000 $i }} {{ (index $endpoint "chain-id") }} {{ (index $endpoint "api-interface") }} {{ end }}
+                {{- range $i, $endpoint := .Values.endpoints }} 
+                - http://0.0.0.0:{{ add 5000 $i }} 
+                - {{ (index $endpoint "chain-id") }} 
+                - {{ (index $endpoint "api-interface") }} 
+                {{- end }}
             {{- toYaml (unset .Values.defaultReadinessProbe "enabled") | nindent 12 }}
           {{ else if .Values.customReadinessProbe.enabled }}
           readinessProbe:
