@@ -97,21 +97,21 @@ ingress:
     annotations:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
     paths:
       - port: rest
         hostPrefix: ""
-        path: /rest(/|$)(.*)
+        path: /rest/(.*)
         pathType: ImplementationSpecific
 
       - port: rpc
         hostPrefix: ""
-        path: /rpc(/|$)(.*)
+        path: /rpc/(.*)
         pathType: Prefix
 
       - port: rpc
         hostPrefix: ""
-        path: (/)(.*)
+        path: /(.*)
         pathType: Prefix
 
       - port: grpc-web
