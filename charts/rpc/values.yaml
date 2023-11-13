@@ -104,9 +104,19 @@ ingress:
         path: /rest/(.*)
         pathType: ImplementationSpecific
 
+      - port: rest
+        hostPrefix: ""
+        path: /rest/(.*)/
+        pathType: ImplementationSpecific
+
       - port: rpc
         hostPrefix: ""
         path: /rpc/(.*)
+        pathType: ImplementationSpecific
+
+      - port: rpc
+        hostPrefix: ""
+        path: /rpc/(.*)/
         pathType: ImplementationSpecific
 
       - port: rpc
