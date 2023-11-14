@@ -41,7 +41,7 @@ spec:
   tls:
     - secretName: {{ $certificateName | quote }}
       hosts:
-        {{- range _, $path := $uniqPaths }}
+        {{- range $_, $path := $uniqPaths }}
         - {{- if (eq $path "") }} "{{ $host }}" {{- else }} "{{ $path }}-{{ $host }}" {{ end }}
         {{- end }}
   {{- end }}
