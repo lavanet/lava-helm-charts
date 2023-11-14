@@ -118,6 +118,7 @@ spec:
           {{ else if $.Values.simpleStartupProbe.enabled }}
           startupProbe:
             httpGet:
+              host: localhost
               path: /block?height={{ $.Values.simpleStartupProbe.height }}
               port: 26657
             # check every 10 seconds for ~24 hours
