@@ -117,12 +117,9 @@ spec:
             {{- toYaml (unset $.Values.startupProbe "enabled") | nindent 12 }}
           {{ else if $.Values.simpleStartupProbe.enabled }}
           startupProbe:
-            exec:
-              command:
-                - lavad
-                - query
-                - block
-                - "{{ $.Values.simpleStartupProbe.height }}"
+            httpGet:
+              path: /block?height={{ $.Values.simpleStartupProbe.height }}
+              port: 26657
             # check every 10 seconds for ~24 hours
             failureThreshold: 12000
             periodSeconds: 10
