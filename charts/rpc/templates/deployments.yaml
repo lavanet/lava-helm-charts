@@ -119,10 +119,10 @@ spec:
           startupProbe:
             exec:
               command:
-              - lavad
-              - query
-              - block
-              - {{ $.Values.simpleStartupProbe.height }}
+                - lavad
+                - query
+                - block
+                - "{{ $.Values.simpleStartupProbe.height }}"
             # check every 10 seconds for ~24 hours
             failureThreshold: 12000
             periodSeconds: 10
