@@ -3,16 +3,16 @@
 {{- $serviceName = .Values.service.name -}}
 {{- end -}}
 {{ if .Values.ingress.enabled -}}
-{{ $uniquePaths := list }}
-{{- $uniquePaths = .Values.ingress.http.paths  -}}
+{{ $uniqPaths := list }}
+{{- $uniqPaths = .Values.ingress.http.paths  -}}
 {{- range .Values.ingress.http.paths }}
   {{- if (eq .hostPrefix "") }} 
-    {{ append $uniquePaths "" }}
+    {{ append $uniqPaths "" }}
   {{- else }} 
-    {{ append $uniquePaths .hostPrefix }}
+    {{ append $uniqPaths .hostPrefix }}
   {{- end }}
 {{- end }}
-{{- $uniquePaths = uniq $uniqPaths -}}
+{{- $uniqPaths = uniq $uniqPaths -}}
 ---
 # HTTP ingress definition.
 apiVersion: networking.k8s.io/v1
@@ -41,7 +41,7 @@ spec:
   tls:
     - secretName: {{ $certificateName | quote }}
       hosts:
-        {{- range $uniquePaths }}
+        {{- range $uniqPaths }}
         - {{- if (eq . "") }} "{{ $host }}" {{- else }} "{{ . }}-{{ $host }}" {{ end }}
         {{- end }}
   {{- end }}
