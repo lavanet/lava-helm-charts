@@ -41,8 +41,8 @@ spec:
   tls:
     - secretName: {{ $certificateName | quote }}
       hosts:
-        {{- range $uniqPaths }}
-        - {{- if (eq . "") }} "{{ $host }}" {{- else }} "{{ . }}-{{ $host }}" {{ end }}
+        {{- range _, $path := $uniqPaths }}
+        - {{- if (eq $path "") }} "{{ $host }}" {{- else }} "{{ $path }}-{{ $host }}" {{ end }}
         {{- end }}
   {{- end }}
   {{ if .Values.ingress.rulesOverride }}
