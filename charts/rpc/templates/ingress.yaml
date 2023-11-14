@@ -4,15 +4,14 @@
 {{- end -}}
 {{ if .Values.ingress.enabled -}}
 {{ $uniqPaths := list }}
-{{- $uniqPaths = .Values.ingress.http.paths  -}}
-{{- range .Values.ingress.http.paths }}
-  {{- if (eq .hostPrefix "") }} 
-    {{ append $uniqPaths "" }}
-  {{- else }} 
-    {{ append $uniqPaths .hostPrefix }}
-  {{- end }}
-{{- end }}
-{{- $uniqPaths = uniq $uniqPaths -}}
+{{- range .Values.ingress.http.paths -}}
+  {{- if (eq .hostPrefix "") -}} 
+    {{- $uniqPaths = append $uniqPaths "" -}}
+  {{ else }} 
+    {{- $uniqPaths = append $uniqPaths .hostPrefix -}}
+  {{- end -}}
+{{- end -}}
+{{ $uniqPaths = uniq $uniqPaths }}
 ---
 # HTTP ingress definition.
 apiVersion: networking.k8s.io/v1
