@@ -12,15 +12,18 @@ moniker: null
 chainId: "lava-testnet-2"
 
 # REQUIRED: The url for a lava RPC node
-## example 
+## example
 # rpcNodeUrl: "https://public-rpc-testnet2.lavanet.xyz:443"
 rpcNodeUrl: null
 
+# use lavavisor or control versions directly with docker images
+# defaults true to use lavavisor
+lavavisor: true
 
 # information about the private key to use for the node
 key:
-  # will default to the moniker 
-  name: "" 
+  # will default to the moniker
+  name: ""
 
   # REQUIRED: the kubernetes secret name containing the private key
   secretName: null
@@ -44,7 +47,6 @@ endpoint: null
 ## example
 # supportedChainIds: ["ETH1", "COS3"]
 supportedChainIds: null
-
 
 # Set your geolocation
 ## Geolocation codes
@@ -101,18 +103,18 @@ ingress:
 #       network-address:
 #         address: 0.0.0.0:2224
 #         disable-tls: true
-#       node-urls: 
+#       node-urls:
 #         url: 127.0.0.1:9090
 #     - api-interface: rest
 #       chain-id: LAV1
 #       network-address:
 #         address: 0.0.0.0:2224
 #         disable-tls: true
-#       node-urls: 
+#       node-urls:
 #         url: http://127.0.0.1:1317
 
-# note: This will create a new configMap. 
-# If you want to use an existing configMap, or secret use `extraSecretMounts` or `extraConfigMounts` 
+# note: This will create a new configMap.
+# If you want to use an existing configMap, or secret use `extraSecretMounts` or `extraConfigMounts`
 # and set `configFilePath`
 configYaml: null
 
@@ -153,7 +155,8 @@ service:
   ports: null
 
 # mount secrets as files, useful for mounting key file
-extraSecretMounts: []
+extraSecretMounts:
+  []
   # - name: node-private-key
   #   mountPath: /data
   #   subPath: /keychain/node-private-key
@@ -161,7 +164,8 @@ extraSecretMounts: []
   #   readOnly: true
 
 # mount config as files, useful for mounting the config file
-extraConfigMounts: []
+extraConfigMounts:
+  []
   # - name: node-config
   #   mountPath: /data
   #   subPath: /data/node-config.toml
@@ -212,7 +216,7 @@ persistentVolume:
   ## Useful if Persistent Volumes have been provisioned in advance
   ## Ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
   selector: null
-  ## ex: 
+  ## ex:
   # selector:
   #  matchLabels:
   #    release: "stable"

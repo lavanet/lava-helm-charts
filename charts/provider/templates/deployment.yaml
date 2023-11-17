@@ -138,7 +138,26 @@ spec:
           {{- end }}
           # default command
           {{- else }}
-          command: ["lavad"]
+          {{- if .Values.lavavisor }}
+          command: ["lavavisor"]
+          args: [
+            "pod",
+            "--cmd",
+            'lavap rpcprovider {{ $configFilePath }}
+              --from {{ include "provider.keyname" . }}
+              --home {{ .Values.persistentVolume.mountPath }}
+              --keyring-backend test
+              --keyring-dir {{ .Values.persistentVolume.mountPath }}
+              --geolocation {{.Values.geolocation}}
+              --node {{ $rpcNodeUrl }}
+              --chain-id {{.Values.chainId}}',
+            --directory,
+            "{{ .Values.persistentVolume.mountPath }}",
+            "--node", "{{ $rpcNodeUrl }}",
+            "--chain-id", "{{ .Values.chainId }}",
+          ]
+          {{- else }}
+          command: ["lavap"]
           args: [
             "rpcprovider", "{{ $configFilePath }}", 
             "--from", "{{- include "provider.keyname" . }}",
@@ -149,6 +168,7 @@ spec:
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{.Values.chainId}}"
           ]
+          {{- end }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
