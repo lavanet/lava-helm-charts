@@ -143,8 +143,8 @@ spec:
           args: [
             "pod",
             "--cmd",
-            'lavap rpcprovider "{{ $configFilePath }}"
-              --from {{ include "consumer.keyname" . }}
+            'lavap rpcprovider {{ $configFilePath }}
+              --from {{ include "provider.keyname" . }}
               --home {{ .Values.persistentVolume.mountPath }}
               --keyring-backend test
               --keyring-dir {{ .Values.persistentVolume.mountPath }}
