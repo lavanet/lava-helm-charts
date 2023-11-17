@@ -127,6 +127,11 @@ ingress:
         path: /
         pathType: Prefix
 
+      - port: rpc
+        hostPrefix: ""
+        path: /rpc
+        pathType: Prefix
+
       - port: grpc-web
         hostPrefix: grpc-web
         path: /
