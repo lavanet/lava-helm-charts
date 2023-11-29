@@ -3,6 +3,4 @@ name: lava-provider
 description: Helm chart for launching a lava provider
 
 type: application
-version: 0.3.0
-
-appVersion: "0.24.0"
+version: 1.0.0
