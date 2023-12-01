@@ -276,24 +276,32 @@ resources:
 # override the start command to start the rpc
 command: null
 
-# readiness probe
-readinessProbe:
-  enabled: false
+# default readiness probe
+defaultReadinessProbe:
+  enabled: true
   httpGet:
     path: /status
     port: 26657
+
+# custom readiness probe
+readinessProbe:
+  enabled: false
   # initialDelaySeconds: 30
   # periodSeconds: 10
   # timeoutSeconds: 5
   # successThreshold: 1
   # failureThreshold: 3
 
-# liveness probe
-livenessProbe:
-  enabled: false
+# default liveness probe
+defaultLivenessProbe:
+  enabled: true
   httpGet:
     path: /health
     port: 26657
+
+# custom liveness probe
+livenessProbe:
+  enabled: false
   # initialDelaySeconds: 30
   # periodSeconds: 10
   # timeoutSeconds: 5

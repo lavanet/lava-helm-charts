@@ -104,17 +104,23 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
           {{ if $.Values.livenessProbe.enabled }}
           livenessProbe:
             {{- toYaml (unset $.Values.livenessProbe "enabled") | nindent 12 }}
-          {{- end }}
+          {{ else if $.Values.defaultLivenessProbe.enabled }}
+          livenessProbe:
+            {{- toYaml (unset $.Values.defaultLivenessProbe "enabled") | nindent 12 }}
+          {{ end }}
+
           {{ if $.Values.readinessProbe.enabled }}
           readinessProbe:
             {{- toYaml (unset $.Values.readinessProbe "enabled") | nindent 12 }}
+          {{ else if $.Values.defaultReadinessProbe.enabled }}
+          readinessProbe:
+            {{- toYaml (unset $.Values.defaultReadinessProbe "enabled") | nindent 12 }}
           {{ end }}
-          {{ if $.Values.startupProbe.enabled }}
-          startupProbe:
-            {{- toYaml (unset $.Values.startupProbe "enabled") | nindent 12 }}
+
           {{ else if $.Values.simpleStartupProbe.enabled }}
           startupProbe:
             httpGet:
