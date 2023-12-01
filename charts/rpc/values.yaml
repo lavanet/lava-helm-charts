@@ -325,5 +325,5 @@ podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
 
-# backwards compatibility, remove if no one is using statefulsets
-useStatefulSet: false
+# default to using statefulsets
+useStatefulSet: true
