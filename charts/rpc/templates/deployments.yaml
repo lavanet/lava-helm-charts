@@ -121,7 +121,7 @@ spec:
             {{- toYaml (unset $.Values.defaultReadinessProbe "enabled") | nindent 12 }}
           {{ end }}
 
-          {{ else if $.Values.simpleStartupProbe.enabled }}
+          {{ if $.Values.simpleStartupProbe.enabled }}
           startupProbe:
             httpGet:
               path: /block?height={{ $.Values.simpleStartupProbe.height }}
