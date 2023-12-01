@@ -279,9 +279,11 @@ command: null
 # default readiness probe
 defaultReadinessProbe:
   enabled: true
-  httpGet:
-    path: /status
-    port: 26657
+  exec:
+    command:
+      - sh
+      - -c
+      - lavad status | grep -q "\"catching_up\":true" && exit 1 || exit 0
 
 # custom readiness probe
 readinessProbe:
@@ -309,10 +311,8 @@ livenessProbe:
   # failureThreshold: 3
 
 # startup probe
-# start only when the rpc is at this block
 simpleStartupProbe:
   enabled: false
-  height: 542000
 
 startupProbe:
   enabled: false
