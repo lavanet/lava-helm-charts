@@ -121,9 +121,11 @@ spec:
           {{ end }}
           {{ if .Values.simpleStartupProbe.enabled }}
           startupProbe:
-            httpGet:
-              path: /block?height={{ $.Values.simpleStartupProbe.height }}
-              port: 26657
+            exec:
+              command:
+                - sh
+                - -c
+                - lavad status | grep -q "\"catching_up\":true" && exit 1 || exit 0
             # check every 10 seconds for ~24 hours
             failureThreshold: 12000
             periodSeconds: 10
