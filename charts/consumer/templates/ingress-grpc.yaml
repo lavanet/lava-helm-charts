@@ -1,0 +1,53 @@
+---
+{{ if (and .Values.ingress.enabled (or .Values.ingress.simple.enabled .Values.ingress.custom.enabled)) -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "consumer.fullname"  . }}-grpc
+  labels:
+    {{- include "consumer.labels" . | nindent 4 }}
+    lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}    
+    lavanet.xyz/node_type: "consumer"
+  annotations:
+    {{- with .Values.ingress.grpc.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if (and .Values.ingress.custom.enabled .Values.ingress.custom.tls) }}
+  tls:
+    {{- tpl (toYaml .Values.ingress.custom.tls | nindent 4) . }}
+  {{- else }}
+  tls:
+    - hosts:
+      {{ range .Values.endpoints }}
+      {{ if eq (index . "api-interface") "grpc" }}
+        - {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) .url ) }} 
+      {{- end }}
+      {{- end }}
+      secretName: {{ $.Values.ingress.simple.tlsSecretName }}
+  {{- end }}
+  {{- if (and .Values.ingress.custom.enabled .Values.ingress.custom.rules) }}
+  rules:
+    {{- tpl (toYaml .Values.ingress.custom.rules | nindent 4) . }}
+  {{- else }}
+  rules:
+    {{ range $i, $endpoint := .Values.endpoints }}
+    {{ if eq (index $endpoint "api-interface") "grpc" }}
+    - host: {{ lower (default (print (index . "chain-id") "-" (index . "api-interface") "." $.Values.ingress.simple.baseHost) .url ) }} 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name:  '{{- include "consumer.fullname" $ }}'
+                port:
+                  name: {{ trunc 15 (lower (print (index $endpoint "chain-id") "-" (index $endpoint "api-interface"))) }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

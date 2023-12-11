@@ -1,0 +1,38 @@
+logLevel: "warn"
+
+# provider node moniker, will default to the fullname
+moniker: "my-node"
+
+# the url for a lava RPC node
+rpcNodeUrl: "https://public-rpc-testnet2.lavanet.xyz:443"
+
+# information about the private key to use for the node
+key:
+  name: "my-node-key"
+  # name of the secret in secret.example.yaml
+  secretName: provider-key-secret
+  secretKey: key.txt
+  passwordSecretName: provider-key-secret
+  passwordSecretKey: password
+
+# the url where your provider can be reached
+endpoints:
+  - chain-id: COS5
+    api-interface: rest
+  - chain-id: COS5
+    api-interface: tendermintrpc
+  - chain-id: COS5
+    api-interface: grpc
+
+# setup ingress for your provider
+ingress:
+  enabled: true
+  className: "nginx"
+  simple:
+    enabled: true
+    baseHost: lava-consumer.example.com
+    tlsSecretName: lava-consumer-tls
+  annotations:
+    external-dns.alpha.kubernetes.io/aws-region: us-east-1
+    external-dns.alpha.kubernetes.io/set-identifier: my-cluster-name
+    external-dns.custom.kubernetes.io/public-load-balancer: 'true'

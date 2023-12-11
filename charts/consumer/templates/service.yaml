@@ -1,0 +1,37 @@
+---
+{{- $serviceName := include "consumer.fullname" .  -}}
+{{- if .Values.service.name -}}
+{{- $serviceName = .Values.service.name -}}
+{{- end -}}
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+  labels:
+    lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
+    lavanet.xyz/node_type: "consumer"
+    {{- include "consumer.labels" . | nindent 4 }}
+spec:
+  type:  {{ .Values.service.type }}
+  {{- if .Values.service.customPorts }}
+  ports:
+    {{- toYaml .Values.service.customPorts | nindent 4 }}
+  {{ else }}
+  ports:
+  {{ range $i, $endpoint := .Values.endpoints }}
+    - name: {{ trunc 15 (lower (print (index $endpoint "chain-id") "-" (index $endpoint "api-interface"))) }}
+      port: {{ add 5000 $i }}
+      protocol: TCP
+      targetPort: {{ add 5000 $i }}
+  {{- end }}
+  {{- end }}
+  selector:
+    lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
+    lavanet.xyz/node_type: "consumer"
+    {{- include "consumer.selectorLabels" . | nindent 4 }}
+{{- end }}

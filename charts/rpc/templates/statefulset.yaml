@@ -89,11 +89,11 @@ spec:
               protocol: {{ .protocol }}
           {{- end }}
           {{- if .Values.command }}
-          {{- with .Values.commmand.name }}
+          {{- with .Values.command.name }}
           command: 
             - {{ . | quote }}
           {{- end }}
-          {{- with .Values.commmand.args }}
+          {{- with .Values.command.args }}
           args:
             {{- toYaml . | nindent 12 -}}
           {{- end }}

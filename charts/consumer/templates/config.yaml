@@ -1,0 +1,22 @@
+{{- if .Values.configYaml -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "consumer.fullname" . }}-config-from-values
+data:
+  consumer_config.yaml: |
+{{ .Values.configYaml  | indent 4 }}
+{{- else}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "consumer.fullname" . }}-config-from-values
+data:
+  consumer_config.yaml: |
+    endpoints:
+      {{- range $i, $endpoint := .Values.endpoints }}
+      - chain-id: {{ (index $endpoint "chain-id")  }}
+        api-interface: {{ (index $endpoint "api-interface")  }}
+        network-address: "0.0.0.0:{{ add 5000 $i }}"
+      {{- end }}
+{{- end -}}

@@ -5,7 +5,7 @@ logLevel: "warn"
 fullnameOverride: null
 nameOverride: null
 
-# provider node moniker, will default to the fullname
+# consumer node moniker, will default to the fullname
 moniker: null
 
 # chain id of lava
@@ -15,10 +15,6 @@ chainId: "lava-testnet-2"
 ## example
 # rpcNodeUrl: "https://public-rpc-testnet2.lavanet.xyz:443"
 rpcNodeUrl: null
-
-# use lavavisor or control versions directly with docker images
-# defaults true to use lavavisor
-lavavisor: true
 
 # information about the private key to use for the node
 key:
@@ -37,10 +33,20 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
-# REQUIRED: the chain ids for the chains the node will serve
+# the chains and interfaces your consumer will support
 ## example
-# supportedChainIds: ["ETH1", "COS3"]
-supportedChainIds: null
+# endpoints:
+#   - chain-id: COS5
+#     api-interface: rest
+#     url: cos5-rest-consumer1.example.com
+#   - chain-id: COS5
+#     api-interface: tendermintrpc
+#   - chain-id: COS5
+#     api-interface: grpc
+endpoints: []
+
+# use lavavisor or control versions directly with docker images
+lavavisor: true
 
 # Set your geolocation
 ## Geolocation codes
@@ -54,69 +60,71 @@ supportedChainIds: null
 #  GL = 65535; // Global
 geolocation: "1"
 
-# setup ingress for the node
-# example:
+### setup ingress for the node
+## custom example:
 # ingress:
 #  enabled: true
-#  tls:
-#    - secretName: lava-provider-tls
-#      hosts:
-#        - lava-provider.example.com
-#  rules:
-#    - host: lava-provider.example.com
-#      http:
-#        paths:
-#          - path: /
-#            backend:
-#              serviceName: lava-provider
-#              servicePort: 5000
+#   custom:
+#     enabled: true
+#     tls:
+#       - secretName: lava-consumer-tls
+#         hosts:
+#           - lava-consumer.example.com
+#     rules:
+#       - host: lava-consumer.example.com
+#         http:
+#           paths:
+#             - path: /
+#               backend:
+#                 serviceName: lava-consumer
+#                 servicePort: 5000
 #  annotations: {}
+#
+## simple example:
+# ingress:
+#  enabled: true
+#  simple:
+#    enabled: true
+#    baseHost: lava-consumer.example.com
+#    tlsSecretName: lava-consumer-tls
+#  annotations: {}
+
 ingress:
-  enabled: true
+  enabled: false
+  simple:
+    enabled: false
+    baseHost: null
+    tlsSecretName: null
+  custom:
+    enabled: false
+    tls: []
+    rules: []
   className: "nginx"
-  tls: []
-  rules: []
+  http:
+    annotations:
+      {}
+  grpc:
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
-# config for the node
+# use a custom configYaml for the node
 ## example
 # configYaml: |
 #   endpoints:
-#     - api-interface: tendermintrpc
-#       chain-id: LAV1
-#       network-address:
-#         address: 0.0.0.0:2224
-#         disable-tls: true
-#       node-urls:
-#         - url: ws://0.0.0.0:26657/websocket
-#         - url: http://0.0.0.0:26657
-#     - api-interface: grpc
-#       chain-id: LAV1
-#       network-address:
-#         address: 0.0.0.0:2224
-#         disable-tls: true
-#       node-urls:
-#         url: 0.0.0.0:9090
-#     - api-interface: rest
-#       chain-id: LAV1
-#       network-address:
-#         address: 0.0.0.0:2224
-#         disable-tls: true
-#       node-urls:
-#         url: http://0.0.0.0:1317
+#     - chain-id: COS5
+#       api-interface: rest
+#       network-address: 0.0.0.0:30016
+#     - chain-id: COS5
+#       api-interface: tendermintrpc
+#       network-address: 0.0.0.0:30015
+#     - chain-id: COS5
+#       api-interface: grpc
+#       network-address: 0.0.0.0:30028
 
 # note: This will create a new configMap.
-# If you want to use an existing configMap, or secret use `extraSecretMounts` or `extraConfigMounts`
-# and set `configFilePath`
 configYaml: null
-
-# the path to the config file
-# If you are using `extraConfigMounts` or `extraSecretMounts`, provide the path to the config file
-## example:
-# configFilePath: /data/node-config.toml
-configFilePath: null
 
 # add custom environment variables to the node using secret of configs
 envFrom: []
@@ -126,15 +134,9 @@ env: []
 
 # image to deploy
 image:
-  repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-provider
+  repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-consumer
   pullPolicy: Always
   tag: latest
-
-# port to expose the node on
-port:
-  name: default
-  number: 2224
-  protocol: TCP
 
 # set service account name
 serviceAccountName: null
@@ -145,8 +147,8 @@ service:
   name: null
   type: ClusterIP
   annotations: {}
-  # override .Values.port with these values
-  ports: null
+  # if not set we will create ports for the service using endpoints
+  customPorts: null
 
 # mount secrets as files, useful for mounting key file
 extraSecretMounts:
@@ -237,21 +239,21 @@ resources:
   limits:
     memory: "2Gi"
 
-# override the start command to start the provider
+# override the start command to start the consumer
 command: null
 
-# enable default readiness, using `endpoint` and `supportedChainIds`
+# enable default readiness
 defaultReadinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 10
 
-# enable default readiness, using `endpoint` and `supportedChainIds`
+# enable default readiness
 defaultLivenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 60
   periodSeconds: 10
   timeoutSeconds: 5
