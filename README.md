@@ -8,6 +8,13 @@ Helm charts for running lava nodes
 - Chart: `oci://us-central1-docker.pkg.dev/lavanet-public/charts/lava-provider`
 - Image: `us-central1-docker.pkg.dev/lavanet-public/images/lava-provider:latest`
 
+## Consumer
+
+- Docs [/charts/provider/README.md](/charts/consumer/README.md)
+- Example [/examples/consumer/](/examples/consumer)
+- Chart: `oci://us-central1-docker.pkg.dev/lavanet-public/charts/lava-consumer`
+- Image: `us-central1-docker.pkg.dev/lavanet-public/images/lava-consumer:latest`
+
 ## RPC
 
 - Docs [/charts/rpc/README.md](/charts/rpc/README.md)
