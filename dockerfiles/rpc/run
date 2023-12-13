@@ -30,10 +30,13 @@ if [ ! -f "$DATA_DIR/config/genesis.json" ]; then
   mkdir -p $DATA_DIR/config
   cp /app/data/config/* $DATA_DIR/config/
 
+  # fix permissions
+  sed -i 's|laddr = "tcp://127.0.0.1|laddr = "tcp://0.0.0.0|' "$DATA_DIR/config/config.toml"
+
   mkdir -p $DATA_DIR/data
 fi
 
-# init cosmovisor if not already donej
+# init cosmovisor if not already done
 if [ ! -d "$DATA_DIR/config/cosmovisor" ]; then
   cosmovisor init $(which lavad)
 fi

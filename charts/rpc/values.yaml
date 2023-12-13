@@ -55,9 +55,6 @@ snapshot:
 
         rm -rf "$TMP_DIR"
 
-        # fix permissions
-        sed -i 's|laddr = "tcp://127.0.0.1|laddr = "tcp://0.0.0.0|' $RPC_DATA_DIR/config/config.toml
-
         echo $(date) >> "$SNAPSHOT_COMPLETE_FILE"
       else
         echo "RPC data directory is not empty, skipping snapshot download"
