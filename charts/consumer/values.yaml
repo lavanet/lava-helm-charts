@@ -101,8 +101,7 @@ ingress:
     rules: []
   className: "nginx"
   http:
-    annotations:
-      {}
+    annotations: {}
   grpc:
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
@@ -227,9 +226,9 @@ persistentVolume:
 
   volumeBindingMode: null
 
-  emptyDir:
-    ## emptyDir volume size limit
-    sizeLimit: ""
+emptyDir:
+  ## emptyDir volume size limit
+  sizeLimit: ""
 
 # resource limits for the node
 resources:
