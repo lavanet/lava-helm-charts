@@ -16,7 +16,11 @@ metadata:
 spec:
   replicas: 1
   strategy:
+  {{- if .Values.persistentVolume.enabled }}
     type: Recreate
+  {{- else }}
+    type: RollingUpdate
+  {{- end }}
   selector:
     matchLabels:
       lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
