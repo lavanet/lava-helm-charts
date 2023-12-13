@@ -239,6 +239,14 @@ resources:
   limits:
     memory: "2Gi"
 
+# set hpa scaling thresholds
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 32
+  targetMemoryUtilizationPercentage: 75
+  targetCpuUtilizationPercentage: 20
+
 # override the start command to start the consumer
 command: null
 
