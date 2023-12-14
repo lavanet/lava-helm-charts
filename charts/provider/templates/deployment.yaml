@@ -19,9 +19,14 @@ metadata:
     lavanet.xyz/node_type: "provider"
     {{- include "provider.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.persistentVolume.enabled }}
   replicas: 1
   strategy:
     type: Recreate
+  {{- else }}
+  strategy:
+    type: RollingUpdate
+  {{- end }}
   selector:
     matchLabels:
       lavanet.xyz/node_moniker:  {{ include "provider.moniker"  . }}
