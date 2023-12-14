@@ -229,6 +229,11 @@ persistentVolume:
     ## emptyDir volume size limit
     sizeLimit: ""
 
+
+emptyDir:
+  ## emptyDir volume size limit
+  sizeLimit: ""
+
 # resource limits for the node
 resources:
   requests:
