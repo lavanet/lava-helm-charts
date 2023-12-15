@@ -19,4 +19,5 @@ data:
         api-interface: {{ (index $endpoint "api-interface")  }}
         network-address: "0.0.0.0:{{ add 5000 $i }}"
       {{- end }}
+    metrics-listen-address: ":{{.Values.metrics-port}}"
 {{- end -}}

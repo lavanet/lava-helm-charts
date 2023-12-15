@@ -43,6 +43,7 @@ key:
 #     api-interface: tendermintrpc
 #   - chain-id: COS5
 #     api-interface: grpc
+# metrics-port: 20020
 endpoints: []
 
 # use lavavisor or control versions directly with docker images
