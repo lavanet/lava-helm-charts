@@ -33,6 +33,9 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
+# REQUIRED: Metrics port
+metricsPort: null
+
 # the chains and interfaces your consumer will support
 ## example
 # endpoints:
@@ -43,7 +46,6 @@ key:
 #     api-interface: tendermintrpc
 #   - chain-id: COS5
 #     api-interface: grpc
-# metrics-port: 20020
 endpoints: []
 
 # use lavavisor or control versions directly with docker images
