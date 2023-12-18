@@ -104,8 +104,10 @@ ingress:
     rules: []
   className: "nginx"
   http:
+    enabled: false
     annotations: {}
   grpc:
+    enabled: false
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
   annotations:
