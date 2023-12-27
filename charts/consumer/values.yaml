@@ -1,6 +1,9 @@
 # set the log level for the node
 logLevel: "warn"
 
+# Replica count, default to 3
+replicaCount: 3
+
 # override the fullname
 fullnameOverride: null
 nameOverride: null
