@@ -23,7 +23,7 @@ data:
         {{ end }}
         {{ if (index $endpoint "api-interface") eq "grpc" }}
         health-check-path: "/" 
-        {{ endif }}
+        {{ end }}
       {{- end }}
     metrics-listen-address: ":{{.Values.metricsPort}}"
 {{- end -}}
