@@ -20,7 +20,7 @@ data:
         network-address: "0.0.0.0:{{ add 5000 $i }}"
         {{- if hasKey $endpoint "tls-enabled" }}
         tls-enabled: {{ (index $endpoint "tls-enabled") }}
-        {{ end }}
+        {{- end }}
       {{- end }}
     metrics-listen-address: ":{{.Values.metricsPort}}"
 {{- end -}}
