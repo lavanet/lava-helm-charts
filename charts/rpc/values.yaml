@@ -158,7 +158,7 @@ env:
 image:
   repository: us-central1-docker.pkg.dev/lavanet-public/images/lava-rpc
   pullPolicy: Always
-  tag: v0.32.0
+  tag: v0.21.1.2
 
 # port to expose the node on
 ports:
