@@ -21,9 +21,6 @@ data:
         {{- if hasKey $endpoint "tls-enabled" }}
         tls-enabled: {{ (index $endpoint "tls-enabled") }}
         {{ end }}
-        {{ if (index $endpoint "api-interface") eq "grpc" }}
-        health-check-path: "/" 
-        {{ end }}
       {{- end }}
     metrics-listen-address: ":{{.Values.metricsPort}}"
 {{- end -}}
