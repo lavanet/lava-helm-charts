@@ -18,6 +18,12 @@ data:
       - chain-id: {{ (index $endpoint "chain-id")  }}
         api-interface: {{ (index $endpoint "api-interface")  }}
         network-address: "0.0.0.0:{{ add 5000 $i }}"
+        {{- if hasKey $endpoint "tls-enabled" }}
+        tls-enabled: {{ (index $endpoint "tls-enabled") }}
+        {{ end }}
+        {{ if (index $endpoint "api-interface") eq "grpc" }}
+        health-check-path: "/" 
+        {{ endif }}
       {{- end }}
     metrics-listen-address: ":{{.Values.metricsPort}}"
 {{- end -}}
