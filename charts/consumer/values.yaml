@@ -4,6 +4,13 @@ logLevel: "warn"
 # Replica count, default to 3
 replicaCount: 3
 
+# HPA settings
+hpa:
+  enabled: false
+  minReplicas: 3
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
 # override the fullname
 fullnameOverride: null
 nameOverride: null
