@@ -14,7 +14,7 @@ metadata:
     lavanet.xyz/node_type: "consumer"
     {{- include "consumer.labels" . | nindent 4 }}
 spec:
-  {{- if or .Values.persistentVolume.enabled not .Values.hp.enabled }}
+  {{- if .Values.persistentVolume.enabled }}
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
