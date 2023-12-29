@@ -7,6 +7,7 @@ metadata:
   labels:
     lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
     lavanet.xyz/node_type: "consumer"
+    {{- include "consumer.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
