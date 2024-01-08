@@ -1,0 +1,291 @@
+{{- if .Values.metrics.enabled }}
+{{- $keySecretName := required ".Values.key.secretName is required." .Values.key.secretName -}}
+{{- $keySecretKey := required ".Values.key.secretKey is required." .Values.key.secretKey -}}
+{{- $keyPasswordSecretName := required ".Values.key.passwordSecretName is required." .Values.key.passwordSecretName -}}
+{{- $keyPasswordSecretKey := required ".Values.key.passwordSecretKey is required." .Values.key.passwordSecretKey -}}
+{{- $rpcNodeUrl := required ".Values.rpcNodeUrl is required." .Values.rpcNodeUrl -}}
+{{- $configFilePath := "/consumer_config.yaml" -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "consumer.fullname"  . }}-metrics
+  labels:
+    lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
+    lavanet.xyz/node_type: "consumer"
+    {{- include "consumer.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.persistentVolume.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  {{- else }}
+  strategy:
+    type: RollingUpdate
+  {{- end }}
+  selector:
+    matchLabels:
+      lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
+      lavanet.xyz/node_type: "consumer"
+      {{- include "consumer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+       {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        lavanet.xyz/node_moniker:  {{ include "consumer.moniker"  . }}
+        lavanet.xyz/node_type: "consumer"
+        {{- include "consumer.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      ## init container to import key into keyring
+      initContainers:
+        - name: init-import-key
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: 
+           - sh
+           - -c
+           - | 
+            # exit when any command fails
+            set -e 
+
+            # check if its already imported
+            if [ -f {{ .Values.persistentVolume.mountPath }}/imported ]; then
+              echo "Key has already been exported, exiting..."
+              exit 0
+            fi
+
+            # import key into keyring
+            echo $KEY_PASSWORD | lavad keys \
+              import {{ include "consumer.keyname" . }} /tmp/keyfile/{{ $keySecretKey }} \
+              --keyring-backend "test" \
+              --home {{ .Values.persistentVolume.mountPath }} \
+              --keyring-dir {{ .Values.persistentVolume.mountPath }}
+
+            # mark as imported
+            touch {{ .Values.persistentVolume.mountPath }}/imported
+          volumeMounts:
+            - name: "private-key-volume"
+              mountPath: /tmp/keyfile/{{ $keySecretKey }}
+              subPath: {{ $keySecretKey }}
+              readOnly: true
+            - name: data-volume
+              mountPath: {{ .Values.persistentVolume.mountPath }}
+              subPath: "{{ .Values.persistentVolume.subPath }}"
+          env:
+            - name: KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $keyPasswordSecretName }}
+                  key: {{ $keyPasswordSecretKey }}
+      containers:
+        - name: {{ include "consumer.fullname"  . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume-from-values
+              mountPath: "{{ .Values.persistentVolume.mountPath }}/consumer_config.yaml"
+              subPath: consumer_config.yaml
+              readOnly: true
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraConfigMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+            - name: data-volume
+              mountPath: {{ .Values.persistentVolume.mountPath }}
+              subPath: "{{ .Values.persistentVolume.subPath }}"
+          {{- with .Values.envFrom }}
+          envFrom: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env: 
+            - name: LOG_LEVEL
+              value: {{ .Values.logLevel }}
+          {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.customPorts }}
+          ports:
+            {{- toYaml .Values.service.customPorts | nindent 12 }}
+          {{- else }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          {{- end }}
+          {{- if .Values.command }}
+          {{- with .Values.command.name }}
+          command: 
+            - {{ . | quote }}
+          {{- end }}
+          {{- with .Values.command.args }}
+          args:
+            {{- toYaml . | nindent 12 -}}
+          {{- end }}
+          # default command
+          {{- else }}
+          {{- if .Values.lavavisor }}
+          command: ["lavavisor"]
+          args: [
+            "pod",
+            "--cmd",
+            'lavap rpcconsumer {{ $configFilePath }}
+              --from {{ include "consumer.keyname" . }}
+              --home {{ .Values.persistentVolume.mountPath }}
+              --keyring-backend test
+              --keyring-dir {{ .Values.persistentVolume.mountPath }}
+              --geolocation {{.Values.geolocation}}
+              --node {{ $rpcNodeUrl }}
+              --chain-id {{.Values.chainId}}',
+            --directory,
+            "{{ .Values.persistentVolume.mountPath }}",
+            "--node", "{{ $rpcNodeUrl }}",
+            "--chain-id", "{{ .Values.chainId }}",
+          ]
+          {{- else }}
+          command: ["lavap"]
+          args: [
+            "rpcconsumer", "{{ $configFilePath }}",
+            "--from", '{{ include "consumer.keyname" . }}',
+            "--home", "{{ .Values.persistentVolume.mountPath }}",
+            "--keyring-backend", 'test',
+            "--keyring-dir", '{{ .Values.persistentVolume.mountPath }}',
+            "--geolocation", '{{.Values.geolocation}}',
+            "--node", '{{ $rpcNodeUrl }}',
+            "--chain-id", '{{.Values.chainId}}',
+          ]
+          {{- end }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{ if .Values.defaultLivenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command: 
+                - lavap
+                - test
+                - rpcconsumer
+                - "--home"
+                - "{{ .Values.persistentVolume.mountPath }}"
+                - "--keyring-backend"
+                - "test"
+                - "--keyring-dir"
+                - "{{ .Values.persistentVolume.mountPath }}"
+                - "--node"
+                - "{{ $rpcNodeUrl }}"
+                - "--chain-id"
+                - '{{.Values.chainId}}'
+                - --from
+                - {{ include "consumer.keyname" . | quote }}
+                {{- range $i, $endpoint := .Values.endpoints }} 
+                - http://0.0.0.0:{{ add 5000 $i }} 
+                - {{ (index $endpoint "chain-id") }} 
+                - {{ (index $endpoint "api-interface") }} 
+                {{- end }}
+            {{- toYaml (unset .Values.defaultLivenessProbe "enabled") | nindent 12 }}
+          {{ else if .Values.customLivenessProbe.enabled }}
+          livenessProbe:
+            {{- toYaml (unset .Values.customLivenessProbe "enabled") | nindent 12 }}
+          {{- end }}
+          {{ if .Values.defaultReadinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command: 
+                - lavap
+                - test
+                - rpcconsumer
+                - "--home"
+                - "{{ .Values.persistentVolume.mountPath }}"
+                - "--keyring-backend"
+                - "test"
+                - "--keyring-dir"
+                - "{{ .Values.persistentVolume.mountPath }}"
+                - "--node"
+                - "{{ $rpcNodeUrl }}"
+                - "--chain-id"
+                - '{{.Values.chainId}}'
+                - --from
+                - {{ include "consumer.keyname" . | quote }}
+                {{- range $i, $endpoint := .Values.endpoints }} 
+                - http://0.0.0.0:{{ add 5000 $i }} 
+                - {{ (index $endpoint "chain-id") }} 
+                - {{ (index $endpoint "api-interface") }} 
+                {{- end }}
+            {{- toYaml (unset .Values.defaultReadinessProbe "enabled") | nindent 12 }}
+          {{ else if .Values.customReadinessProbe.enabled }}
+          readinessProbe:
+            {{- toYaml (unset .Values.customReadinessProbe "enabled") | nindent 12 }}
+          {{ end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: "private-key-volume"
+          secret: 
+            secretName: {{ $keySecretName }}
+            optional: false
+        - name: config-volume-from-values
+          configMap:
+            name: {{ include "consumer.fullname" . }}-config-from-values
+        {{- range .Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            {{- with .optional }}
+            optional: {{ . }}
+            {{- end }}
+        {{- end }}
+        {{- range .Values.extraConfigMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            {{- with .optional }}
+            optional: {{ . }}
+            {{- end }}
+        {{- end }}
+        - name: data-volume
+        {{- if .Values.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }} {{- include "consumer.fullname"  . }}-data-volume-pvc {{- end }}
+        {{- else }}
+          emptyDir:
+          {{- if .Values.emptyDir.sizeLimit }}
+            sizeLimit: {{ .Values.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
+        {{- end -}}
+{{- end }}

@@ -26,5 +26,7 @@ data:
         {{- end }}
 
       {{- end }}
-    metrics-listen-address: ":{{.Values.metricsPort}}"
+    {{- if .Values.metrics.enabled }}
+    metrics-listen-address: ":{{.Values.metrics.port}}"
+    {{- end }}
 {{- end -}}

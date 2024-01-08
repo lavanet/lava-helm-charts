@@ -43,8 +43,10 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
-# REQUIRED: Metrics port
-metricsPort: null
+#Metrics information
+metrics:
+  enabled: true
+  port: 9090
 
 # the chains and interfaces your consumer will support
 ## example
