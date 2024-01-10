@@ -172,6 +172,7 @@ spec:
             "--geolocation", '{{.Values.geolocation}}',
             "--node", '{{ $rpcNodeUrl }}',
             "--chain-id", '{{.Values.chainId}}',
+            "--strategy distributed"
           ]
           {{- end }}
           {{- end }}
