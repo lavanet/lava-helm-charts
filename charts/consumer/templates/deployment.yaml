@@ -159,7 +159,6 @@ spec:
               --strategy {{.Values.strategy}}
               {{- if .Values.cors.enabled }}
               --cors-headers "{{ .Values.cors.headers | join "," }}"
-              --cors-credentials "{{ .Values.cors.allowCredentials }}"
               --cors-origin "{{ .Values.cors.origins | join "," }}"
               --cors-methods "{{ .Values.cors.methods | join "," }}"
               --cdn-cache-duration "{{ .Values.cors.maxAge }}"
@@ -184,7 +183,6 @@ spec:
             "--strategy", "{{.Values.strategy}}",
             {{- if .Values.cors.enabled }}
             "--cors-headers", "{{ .Values.cors.headers | join "," }}",
-            "--cors-credentials", "{{ .Values.cors.allowCredentials }}",
             "--cors-origin", "{{ .Values.cors.origins | join "," }}",
             "--cors-methods", "{{ .Values.cors.methods | join "," }}",
             "--cdn-cache-duration", "{{ .Values.cors.maxAge }}",
