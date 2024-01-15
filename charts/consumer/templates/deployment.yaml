@@ -156,7 +156,7 @@ spec:
               --geolocation {{.Values.geolocation}}
               --node {{ $rpcNodeUrl }}
               --chain-id {{.Values.chainId}}
-              --strategy distributed
+              --strategy {{.Values.strategy}}
               {{- if .Values.cors.enabled }}
               --cors-headers "{{ .Values.cors.headers | join "," }}"
               --cors-credentials "{{ .Values.cors.allowCredentials }}"
@@ -181,7 +181,7 @@ spec:
             "--geolocation", '{{.Values.geolocation}}',
             "--node", '{{ $rpcNodeUrl }}',
             "--chain-id", '{{.Values.chainId}}',
-            "--strategy distributed",
+            "--strategy", "{{.Values.strategy}}",
             {{- if .Values.cors.enabled }}
             "--cors-headers", "{{ .Values.cors.headers | join "," }}",
             "--cors-credentials", "{{ .Values.cors.allowCredentials }}",

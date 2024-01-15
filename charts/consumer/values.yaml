@@ -72,6 +72,9 @@ cors:
   allowCredentials: true
   maxAge: 86400
 
+# Define the strategy
+strategy: distributed
+
 # Set your geolocation
 ## Geolocation codes
 #  USC = 1; // US-Center
