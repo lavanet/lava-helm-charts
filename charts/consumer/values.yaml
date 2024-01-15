@@ -63,6 +63,15 @@ endpoints: []
 # use lavavisor or control versions directly with docker images
 lavavisor: true
 
+# CORS settings
+cors:
+  enabled: true
+  origins: ["*"]
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  headers: ["*"]
+  allowCredentials: true
+  maxAge: 86400
+
 # Set your geolocation
 ## Geolocation codes
 #  USC = 1; // US-Center

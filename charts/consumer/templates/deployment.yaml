@@ -155,7 +155,16 @@ spec:
               --keyring-dir {{ .Values.persistentVolume.mountPath }}
               --geolocation {{.Values.geolocation}}
               --node {{ $rpcNodeUrl }}
-              --chain-id {{.Values.chainId}}',
+              --chain-id {{.Values.chainId}}
+              --strategy distributed
+              {{- if .Values.cors.enabled }}
+              --cors-headers "{{ .Values.cors.headers | join "," }}"
+              --cors-credentials "{{ .Values.cors.allowCredentials }}"
+              --cors-origin "{{ .Values.cors.origins | join "," }}"
+              --cors-methods "{{ .Values.cors.methods | join "," }}"
+              --cdn-cache-duration "{{ .Values.cors.maxAge }}"
+              {{- end }}
+              ',
             --directory,
             "{{ .Values.persistentVolume.mountPath }}",
             "--node", "{{ $rpcNodeUrl }}",
@@ -172,7 +181,14 @@ spec:
             "--geolocation", '{{.Values.geolocation}}',
             "--node", '{{ $rpcNodeUrl }}',
             "--chain-id", '{{.Values.chainId}}',
-            "--strategy distributed"
+            "--strategy distributed",
+            {{- if .Values.cors.enabled }}
+            "--cors-headers", "{{ .Values.cors.headers | join "," }}",
+            "--cors-credentials", "{{ .Values.cors.allowCredentials }}",
+            "--cors-origin", "{{ .Values.cors.origins | join "," }}",
+            "--cors-methods", "{{ .Values.cors.methods | join "," }}",
+            "--cdn-cache-duration", "{{ .Values.cors.maxAge }}",
+            {{- end }}
           ]
           {{- end }}
           {{- end }}
