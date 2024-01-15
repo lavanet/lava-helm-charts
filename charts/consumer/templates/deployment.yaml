@@ -158,10 +158,10 @@ spec:
               --chain-id {{.Values.chainId}}
               --strategy {{.Values.strategy}}
               {{- if .Values.cors.enabled }}
-              --cors-headers "{{ .Values.cors.headers | join "," }}"
-              --cors-origin "{{ .Values.cors.origins | join "," }}"
-              --cors-methods "{{ .Values.cors.methods | join "," }}"
-              --cdn-cache-duration "{{ .Values.cors.maxAge }}"
+              --cors-headers {{ .Values.cors.headers | join "," }}
+              --cors-origin {{ .Values.cors.origins | join "," }}
+              --cors-methods {{ .Values.cors.methods | join "," }}
+              --cdn-cache-duration {{ .Values.cors.maxAge }}
               {{- end }}
               ',
             --directory,
