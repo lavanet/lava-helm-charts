@@ -157,6 +157,9 @@ spec:
               --node {{ $rpcNodeUrl }}
               --chain-id {{.Values.chainId}}
               --strategy {{.Values.strategy}}
+              {{- if .Values.cache.enabled }}
+              --cache-be {{ .Values.cache.backend }}
+              {{- end }}
               {{- if .Values.cors.enabled }}
               --cors-headers {{ .Values.cors.headers | join "," }}
               --cors-origin {{ .Values.cors.origins | join "," }}
