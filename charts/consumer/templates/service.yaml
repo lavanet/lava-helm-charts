@@ -20,7 +20,12 @@ spec:
   type:  {{ .Values.service.type }}
   {{- if .Values.service.customPorts }}
   ports:
-    {{- toYaml .Values.service.customPorts | nindent 4 }}
+  {{- range $port := .Value.service.customPorts }}
+    - name: {{ $port.name }}
+      port: {{ $port.port }}
+      protocol: {{ default "TCP" $port.protocol }}
+      targetPort: {{ $port.targetPort }}
+  {{- end}}
   {{ else }}
   ports:
   {{ range $i, $endpoint := .Values.endpoints }}

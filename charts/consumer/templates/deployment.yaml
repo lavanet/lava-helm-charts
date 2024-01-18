@@ -123,7 +123,11 @@ spec:
           {{- end }}
           {{- if .Values.service.customPorts }}
           ports:
-            {{- toYaml .Values.service.customPorts | nindent 12 }}
+          {{- range $port := .Value.service.customPorts }}
+            - name: {{ $port.name }}
+              containerPort: {{ default $port.targetPort $port.containerPort }}
+              protocol: {{ default "TCP" $port.protocol }}
+          {{- end}}
           {{- else }}
           ports:
           {{ range $i, $endpoint := .Values.endpoints }}
