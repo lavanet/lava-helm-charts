@@ -176,7 +176,7 @@ service:
   type: ClusterIP
   annotations: {}
   # if not set we will create ports for the service using endpoints
-  customPorts: null
+  # customPorts: null
 
 # mount secrets as files, useful for mounting key file
 extraSecretMounts:
