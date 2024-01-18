@@ -94,12 +94,8 @@ def main(type: str):
 
 
 if __name__ == '__main__':
-    try:
-        if len(argv) != 2:
-            raise Exception("Usage: python tag_latest.py <consumer|provider>")
-        
-        main(argv[1])
-
-    except Exception as e:
-        print(str(e))
+    if len(argv) != 2:
+        print("Usage: python tag_latest.py <consumer|provider>")
         exit(1)
+    
+    main(argv[1])
