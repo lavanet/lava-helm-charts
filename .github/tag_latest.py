@@ -52,7 +52,7 @@ def get_digest(tag, type: str):
         raise Exception(f'Error fetching digest for tag {tag}: {response.content}')
 
 def get_latest_target(type: str) -> str:
-    result = subprocess.run(["../lava/build/lavad", "q", "protocol", "params", "--node", "https://public-rpc-testnet2.lavanet.xyz:443/rpc/", "--output", "--json"], capture_output=True, text=True)
+    result = subprocess.run(["./bin/lavad", "q", "protocol", "params", "--node", "https://public-rpc-testnet2.lavanet.xyz:443/rpc/", "--output", "--json"], capture_output=True, text=True)
     response = json.loads(result.stdout)
 
     if (type == "consumer"):

@@ -21,7 +21,7 @@ permissions:
   contents: read
 
 jobs:
-  build-docker-images:
+  tag-latest:
     environment: Configure CI/CD
     runs-on: ubuntu-latest
     steps:
@@ -50,6 +50,13 @@ jobs:
       - name: 'Authenticate to Google Artifact'
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: "Get lavad"
+        run: |
+          export VERSION=$(cat .github/tags.yaml | yq e ".tags[2]" -o json - -r)
+          mkdir bin
+          curl -L -o bin/lavad https://github.com/lavanet/lava/releases/download/$VERSION/lavad-$VERSION-linux-amd64
+          chmod +x bin/lavad
 
       # tag latest
       - name: "Tag latest branch"
