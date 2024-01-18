@@ -11,6 +11,7 @@ on:
     paths:
       - ".github/tags.yaml"
       - ".github/builder.py"
+      - ".github/tag_latest.py"
       - ".github/workflows/build-docker-images.yml"
       - ".github/workflows/tag-latest.yml"
 
