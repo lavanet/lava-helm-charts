@@ -20,7 +20,7 @@ spec:
   type:  {{ .Values.service.type }}
   {{- if .Values.service.customPorts }}
   ports:
-  {{- range $port := .Value.service.customPorts }}
+  {{- range $port := .Values.service.customPorts }}
     - name: {{ $port.name }}
       port: {{ $port.port }}
       protocol: {{ default "TCP" $port.protocol }}

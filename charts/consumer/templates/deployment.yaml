@@ -123,7 +123,7 @@ spec:
           {{- end }}
           {{- if .Values.service.customPorts }}
           ports:
-          {{- range $port := .Value.service.customPorts }}
+          {{- range $port := .Values.service.customPorts }}
             - name: {{ $port.name }}
               containerPort: {{ default $port.targetPort $port.containerPort }}
               protocol: {{ default "TCP" $port.protocol }}
