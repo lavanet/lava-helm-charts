@@ -26,6 +26,11 @@ chainId: "lava-testnet-2"
 # rpcNodeUrl: "https://public-rpc-testnet2.lavanet.xyz:443"
 rpcNodeUrl: null
 
+# Cache backend for consumer
+cache:
+  enabled: false
+  backend: ""
+
 # information about the private key to use for the node
 key:
   # will default to the moniker
