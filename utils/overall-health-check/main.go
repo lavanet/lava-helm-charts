@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -8,12 +10,22 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/health", healthCheckHandler)
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	var metricsPort, apiPort int
+	flag.IntVar(&metricsPort, "metrics-port", 9090, "Port where Prometheus metrics are exposed")
+	flag.IntVar(&apiPort, "api-port", 8081, "Port to expose health check API")
+	flag.Parse()
+
+	http.HandleFunc("/overall_health", func(w http.ResponseWriter, r *http.Request) {
+		healthCheckHandler(w, r, metricsPort)
+	})
+
+	log.Printf("Checking health on port %d", metricsPort)
+	log.Printf("Starting health check API server on port %d", apiPort)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", apiPort), nil))
 }
 
-func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://localhost:9090/metrics")
+func healthCheckHandler(w http.ResponseWriter, r *http.Request, metricsPort int) {
+	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/metrics", metricsPort))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
