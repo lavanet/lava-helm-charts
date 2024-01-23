@@ -48,10 +48,13 @@ key:
   # REQUIRED: the key in the kubernetes secret that contains the password for the private key
   passwordSecretKey: null
 
-#Metrics information
+# Metrics information
 metrics:
   enabled: true
   port: 9090
+
+# option to add sidecar containers
+sidecars: []
 
 # the chains and interfaces your consumer will support
 ## example

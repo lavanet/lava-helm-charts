@@ -287,6 +287,9 @@ customLivenessProbe:
   # successThreshold: 1
   # failureThreshold: 3
 
+# option to add sidecar containers
+sidecars: []
+
 imagePullSecrets: []
 nodeSelector: {}
 tolerations: []
@@ -294,3 +297,4 @@ affinity: {}
 podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
+

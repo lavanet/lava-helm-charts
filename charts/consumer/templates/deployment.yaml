@@ -86,6 +86,9 @@ spec:
                   name: {{ $keyPasswordSecretName }}
                   key: {{ $keyPasswordSecretKey }}
       containers:
+        {{- if .Values.sidecars }}
+        {{- toYaml .Values.sidecars | nindent 8 }}
+        {{- end }}
         - name: {{ include "consumer.fullname"  . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
