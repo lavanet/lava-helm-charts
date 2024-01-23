@@ -21,6 +21,7 @@ FROM scratch
 
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/healthcheck .
+ENV PATH="/"
 
 # Run the executable
 CMD ["./healthcheck"]
