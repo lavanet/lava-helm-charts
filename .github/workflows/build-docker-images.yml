@@ -64,6 +64,14 @@ jobs:
           export USE_CACHE="true"
           python3 .github/builder.py
 
+      # get lavad
+      - name: "Get lavad"
+        run: |
+          export VERSION=$(cat .github/tags.yaml | yq e ".tags[2]" -o json - -r)
+          mkdir bin
+          curl -L -o bin/lavad https://github.com/lavanet/lava/releases/download/$VERSION/lavad-$VERSION-linux-amd64
+          chmod +x bin/lavad
+
       # tag latest
       - name: "Tag latest branch"
         run: |
