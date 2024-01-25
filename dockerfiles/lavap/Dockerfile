@@ -9,7 +9,7 @@ ARG TAG
 
 RUN [ -z "$TAG" ] && echo "TAG is required (ex: v0.24.0)" && exit 1 || true
 
-WORKDIR app
+WORKDIR /app
 
 # create bin directory
 RUN mkdir -p /app/bin

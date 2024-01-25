@@ -10,7 +10,7 @@ ARG COSMOVISOR_TAG="v1.5.0"
 
 RUN [ -z "$TAG" ] && echo "TAG is required (ex: v0.22.0)" && exit 1 || true
 
-WORKDIR app
+WORKDIR /app
 
 # download lavad binary
 RUN curl -L "https://github.com/lavanet/lava/releases/download/${TAG}/lavad-${TAG}-linux-amd64" > /app/lavad && \
