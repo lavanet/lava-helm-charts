@@ -6,9 +6,6 @@
 {{- $supportedChainIds := required ".Values.supportedChainIds is required." .Values.supportedChainIds -}}
 {{- $rpcNodeUrl := required ".Values.rpcNodeUrl is required." .Values.rpcNodeUrl -}}
 {{- $configFilePath := default "/provider_config.yaml" .Values.configFilePath  -}}
-{{- if (eq $configFilePath "/provider_config.yaml" ) }}
-  {{- $_ := required "You must either set .Values.configFilePath OR .Values.configYaml" .Values.configYaml -}}
-{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
