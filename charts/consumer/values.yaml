@@ -186,6 +186,12 @@ service:
   # if not set we will create ports for the service using endpoints
   customPorts: null
 
+# create extra volumes
+extraVolumes: []
+
+# mount extra volumes
+extraVolumeMounts: []
+
 # mount secrets as files, useful for mounting key file
 extraSecretMounts:
   []

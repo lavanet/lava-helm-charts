@@ -96,6 +96,9 @@ spec:
               mountPath: "{{ .Values.persistentVolume.mountPath }}/consumer_config.yaml"
               subPath: consumer_config.yaml
               readOnly: true
+          {{- range .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -286,6 +289,9 @@ spec:
         - name: config-volume-from-values
           configMap:
             name: {{ include "consumer.fullname" . }}-config-from-values
+        {{- range .Values.extraVolumes }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
         {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
           secret:
