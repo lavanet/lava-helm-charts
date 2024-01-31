@@ -177,6 +177,10 @@ image:
 # set service account name
 serviceAccountName: null
 
+# enable ports
+ports:
+  enabled: true
+
 # service settings
 service:
   enabled: true

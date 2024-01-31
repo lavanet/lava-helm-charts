@@ -124,7 +124,9 @@ spec:
           {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.service.customPorts }}
+          {{- if eq .Values.ports.enabled false }}
+          ports: []
+          {{- else if .Values.service.customPorts }}
           ports:
           {{- range $port := .Values.service.customPorts }}
             - name: {{ $port.name }}
