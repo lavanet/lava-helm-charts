@@ -157,6 +157,7 @@ spec:
             "{{ .Values.persistentVolume.mountPath }}",
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{ .Values.chainId }}",
+            "--log_level", "{{ .Values.logLevel }}"
           ]
           {{- else }}
           command: ["lavap"]
@@ -168,7 +169,8 @@ spec:
             "--keyring-dir",  "{{ .Values.persistentVolume.mountPath }}",
             "--geolocation", "{{.Values.geolocation}}",
             "--node", "{{ $rpcNodeUrl }}",
-            "--chain-id", "{{.Values.chainId}}"
+            "--chain-id", "{{.Values.chainId}}",
+            "--log_level", "{{ .Values.logLevel }}"
           ]
           {{- end }}
           {{- end }}
