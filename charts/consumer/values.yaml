@@ -304,7 +304,7 @@ defaultLivenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   successThreshold: 1
-  failureThreshold: 3
+  failureThreshold: 20
 
 # use a custom readiness probe
 customReadinessProbe:
