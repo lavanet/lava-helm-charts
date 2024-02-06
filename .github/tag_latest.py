@@ -79,7 +79,7 @@ def main(type: str):
     latest_target: str = get_latest_target(type)
 
     if common_tag.strip().replace("v", "") == latest_target.strip().replace("v", ""):
-        print(f"(type} latest is image is up to date");
+        print(f"{type} latest is image is up to date");
     else:
         print("latest tag is incorrect, updating...")
         print(f"tagging {type} v{latest_target} as latest")
