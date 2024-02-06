@@ -79,10 +79,10 @@ def main(type: str):
     latest_target: str = get_latest_target(type)
 
     if common_tag.strip().replace("v", "") == latest_target.strip().replace("v", ""):
-        print("latest is image is up to date");
+        print(f"(type} latest is image is up to date");
     else:
         print("latest tag is incorrect, updating...")
-        print(f"tagging v{latest_target} as latest")
+        print(f"tagging {type} v{latest_target} as latest")
 
         exit_code = subprocess.Popen(["gcloud", "artifacts", "docker", "tags", "add", 
                         f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:v{latest_target}", 
