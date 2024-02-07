@@ -89,6 +89,17 @@ def main(type: str):
                         f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:latest"
         ]).wait()
 
+
+        # maybe it failed because the tag not moved from prerlease to release yet
+        # but the chain is the source of truth so tag the prerlease as latest
+        if exit_code != 0:
+            exit_code = subprocess.Popen(["gcloud", "artifacts", "docker", "tags", "add", 
+                            f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:prerelease-v{latest_target}", 
+                            f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:latest"
+        ]).wait()
+
+
+        # if its still erroring out, then we have a problem
         if exit_code != 0:
             raise Exception(f'Error tagging latest: {exit_code}')
 
