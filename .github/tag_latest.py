@@ -79,6 +79,9 @@ def main(type: str):
     common_tag: str = find_latest_oci_tag(type)
     latest_target: str = get_latest_target(type)
 
+    common_tag = common_tag.replace("prerelease-v", "v")
+    latest_target = latest_target.replace("prerelease-v", "v")
+
     if common_tag.strip().replace("v", "") == latest_target.strip().replace("v", ""):
         print(f"{type} latest is image is up to date");
     else:
@@ -89,7 +92,6 @@ def main(type: str):
                         f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:v{latest_target}", 
                         f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:latest"
         ]).wait()
-
 
         # maybe it failed because the tag not moved from prerlease to release yet
         # but the chain is the source of truth so tag the prerlease as latest
