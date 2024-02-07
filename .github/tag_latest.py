@@ -30,7 +30,7 @@ def get_tags(type: str):
 
     if response.status_code == 200:
         tags = response.json().get('tags', [])
-        tags = [tag for tag in tags if tag.startswith('v')]
+        tags = [tag for tag in tags if tag.startswith('v') or tag.startswith('prerelease-v')]
 
         tags.sort(key=lambda tag: split_tag(tag), reverse=True)
 
