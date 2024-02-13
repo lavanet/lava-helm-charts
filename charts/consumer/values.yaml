@@ -71,6 +71,8 @@ endpoints: []
 # use lavavisor or control versions directly with docker images
 lavavisor: true
 
+refererBeAddress: null
+
 # CORS settings
 cors:
   enabled: true
