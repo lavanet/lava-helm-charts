@@ -175,6 +175,9 @@ spec:
               --cors-methods {{ .Values.cors.methods | join "," }}
               --cdn-cache-duration {{ .Values.cors.maxAge }}
               {{- end }}
+              {{- with .Values.refererBeAddress }}
+              --referer-be-address={{ . }}
+              {{- end }}
               ',
             --directory,
             "{{ .Values.persistentVolume.mountPath }}",
@@ -193,6 +196,9 @@ spec:
             "--node", '{{ $rpcNodeUrl }}',
             "--chain-id", '{{.Values.chainId}}',
             "--strategy", "{{.Values.strategy}}",
+            {{- with .Values.refererBeAddress }}
+              --referer-be-address={{ . }},
+            {{- end }}
             {{- if .Values.cors.enabled }}
             "--cors-headers", "{{ .Values.cors.headers | join "," }}",
             "--cors-origin", "{{ .Values.cors.origins | join "," }}",
