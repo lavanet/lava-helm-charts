@@ -157,7 +157,7 @@ spec:
             "{{ .Values.persistentVolume.mountPath }}",
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{ .Values.chainId }}",
-            "--log-level", "{{ .Values.logLevel }}"
+            "--log_level", "{{ .Values.logLevel }}"
           ]
           {{- else }}
           command: ["lavap"]
@@ -170,7 +170,7 @@ spec:
             "--geolocation", "{{.Values.geolocation}}",
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{.Values.chainId}}",
-            "--log-level", "{{ .Values.logLevel }}"
+            "--log_level", "{{ .Values.logLevel }}"
           ]
           {{- end }}
           {{- end }}

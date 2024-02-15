@@ -171,7 +171,7 @@ spec:
               --node {{ $rpcNodeUrl }}
               --chain-id {{.Values.chainId}}
               --strategy {{.Values.strategy}}
-              --log-level {{ .Values.logLevel }}
+              --log_level {{ .Values.logLevel }}
               {{- if .Values.cache.enabled }}
               --cache-be {{ .Values.cache.backend }}
               {{- end }}
@@ -211,7 +211,7 @@ spec:
             "--cors-methods", "{{ .Values.cors.methods | join "," }}",
             "--cdn-cache-duration", "{{ .Values.cors.maxAge }}",
             {{- end }}
-            "--log-level", "{{ .Values.logLevel }}"
+            "--log_level", "{{ .Values.logLevel }}"
           ]
           {{- end }}
           {{- end }}
