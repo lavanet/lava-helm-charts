@@ -136,6 +136,10 @@ port:
   number: 2224
   protocol: TCP
 
+# metrics port to expose the node on
+metrics:
+  port: null
+
 # set service account name
 serviceAccountName: null
 
