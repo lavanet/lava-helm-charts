@@ -62,5 +62,6 @@ jobs:
       # tag latest
       - name: "Tag latest branch"
         run: |
-          python3 .github/tag_latest.py "consumer"
-          python3 .github/tag_latest.py "provider"
+          python3 .github/tag_latest.py "lava-consumer"
+          python3 .github/tag_latest.py "lava-provider"
+          python3 .github/tag_latest.py "lavap"

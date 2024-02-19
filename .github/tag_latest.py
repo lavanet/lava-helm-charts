@@ -23,10 +23,10 @@ def split_tag(tag):
 
 
 def get_tags(type: str):
-    if type not in ["consumer", "provider"]:
+    if type not in ["lava-consumer", "lava-provider", "lavap"]:
         raise Exception(f'Unknown type {type}')
 
-    url = f'https://{registry_domain}/v2/{repository}/lava-{type}/tags/list'
+    url = f'https://{registry_domain}/v2/{repository}/{type}/tags/list'
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -41,7 +41,7 @@ def get_tags(type: str):
         raise Exception(f'Error fetching tags: {response.content}')
 
 def get_digest(tag, type: str):
-    url = f'https://{registry_domain}/v2/{repository}/lava-{type}/manifests/{tag}'
+    url = f'https://{registry_domain}/v2/{repository}/{type}/manifests/{tag}'
     headers = {
         'Accept': 'application/vnd.docker.distribution.manifest.v1+json, '
                   'application/vnd.oci.image.index.v1+json'
@@ -56,10 +56,13 @@ def get_latest_target(type: str) -> str:
     result = subprocess.run(["./bin/lavad", "q", "protocol", "params", "--node", "https://public-rpc-testnet2.lavanet.xyz:443/rpc/", "--output", "--json"], capture_output=True, text=True)
     response = json.loads(result.stdout)
 
-    if (type == "consumer"):
+    if (type == "lava-consumer"):
         return response["params"]["version"]["consumer_target"]
 
-    if (type == "provider"):
+    if (type == "lava-provider"):
+        return response["params"]["version"]["provider_target"]
+
+    if (type == "lavap"):
         return response["params"]["version"]["provider_target"]
 
     raise Exception(f'Unknown type {type}')
@@ -89,16 +92,16 @@ def main(type: str):
         print(f"tagging {type} v{latest_target} as latest")
 
         exit_code = subprocess.Popen(["gcloud", "artifacts", "docker", "tags", "add", 
-                        f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:v{latest_target}", 
-                        f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:latest"
+                        f"us-central1-docker.pkg.dev/lavanet-public/images/{type}:v{latest_target}", 
+                        f"us-central1-docker.pkg.dev/lavanet-public/images/{type}:latest"
         ]).wait()
 
         # maybe it failed because the tag not moved from prerlease to release yet
         # but the chain is the source of truth so tag the prerlease as latest
         if exit_code != 0:
             exit_code = subprocess.Popen(["gcloud", "artifacts", "docker", "tags", "add", 
-                            f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:prerelease-v{latest_target}", 
-                            f"us-central1-docker.pkg.dev/lavanet-public/images/lava-{type}:latest"
+                            f"us-central1-docker.pkg.dev/lavanet-public/images/{type}:prerelease-v{latest_target}", 
+                            f"us-central1-docker.pkg.dev/lavanet-public/images/{type}:latest"
         ]).wait()
 
 
@@ -109,7 +112,7 @@ def main(type: str):
 
 if __name__ == '__main__':
     if len(argv) != 2:
-        print("Usage: python tag_latest.py <consumer|provider>")
+        print("Usage: python tag_latest.py <lava-consumer|lava-provider|lavap>")
         exit(1)
     
     main(argv[1])
