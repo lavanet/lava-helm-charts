@@ -23,6 +23,9 @@ spec:
   {{- else }}
   strategy:
     type: RollingUpdate
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: 5%
   {{- end }}
   selector:
     matchLabels:
