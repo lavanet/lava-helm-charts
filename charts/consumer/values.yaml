@@ -10,7 +10,7 @@ hpa:
   minReplicas: 3
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 120
+  targetMemoryUtilizationPercentage: 90
 
 # override the fullname
 fullnameOverride: null
