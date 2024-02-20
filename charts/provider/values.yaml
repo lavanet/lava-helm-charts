@@ -133,7 +133,7 @@ image:
 # port to expose the node on
 port:
   name: default
-  number: 2224
+  number: 2024
   protocol: TCP
 
 # metrics port to expose the node on
