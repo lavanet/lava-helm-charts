@@ -133,8 +133,12 @@ image:
 # port to expose the node on
 port:
   name: default
-  number: 2224
+  number: 2024
   protocol: TCP
+
+# metrics port to expose the node on
+metrics:
+  port: 2025
 
 # set service account name
 serviceAccountName: null

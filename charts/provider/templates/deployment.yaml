@@ -179,24 +179,11 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{ if .Values.defaultLivenessProbe.enabled }}
+          {{- $metricsPort := required ".Values.metrics.port is required." .Values.metrics.port -}}
           livenessProbe:
-            exec:
-              command: 
-                - lavad
-                - test
-                - rpcprovider
-                - "--home"
-                - "{{ .Values.persistentVolume.mountPath }}"
-                - "--keyring-backend"
-                - "test"
-                - "--keyring-dir"
-                - "{{ .Values.persistentVolume.mountPath }}"
-                - "--node"
-                - "{{ $rpcNodeUrl }}"
-                - --from
-                - {{ include "provider.keyname" . | quote }}
-                - --endpoints
-                - "{{- range .Values.supportedChainIds -}}{{ $.Values.endpoint }}:443,{{ . }} {{ end }}"
+            httpGet:
+              path: /metrics/overall-health
+              port: {{ $metricsPort }}
             {{- toYaml (unset .Values.defaultLivenessProbe "enabled") | nindent 12 }}
           {{ else if .Values.customLivenessProbe.enabled }}
           livenessProbe:
