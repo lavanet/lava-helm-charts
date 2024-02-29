@@ -175,6 +175,7 @@ spec:
               --chain-id {{.Values.chainId}}
               --strategy {{.Values.strategy}}
               --log_level {{ .Values.logLevel }}
+              "--disable-conflict-transactions"
               {{- if .Values.cache.enabled }}
               --cache-be {{ .Values.cache.backend }}
               {{- end }}
@@ -205,6 +206,7 @@ spec:
             "--node", '{{ $rpcNodeUrl }}',
             "--chain-id", '{{.Values.chainId}}',
             "--strategy", "{{.Values.strategy}}",
+            "--disable-conflict-transactions",
             {{- with .Values.refererBeAddress }}
               --referer-be-address={{ . }},
             {{- end }}
