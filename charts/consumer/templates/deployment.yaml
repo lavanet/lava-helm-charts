@@ -177,7 +177,10 @@ spec:
               --log_level {{ .Values.logLevel }}
               "--disable-conflict-transactions"
               {{- if .Values.cache.enabled }}
-              --cache-be {{ .Values.cache.backend }}
+              --shared-state,
+              {{- with .Values.cache.backend }}
+              --cache-be "{{ . }}",
+              {{- end }}
               {{- end }}
               {{- if .Values.cors.enabled }}
               --cors-headers {{ .Values.cors.headers | join "," }}
@@ -207,15 +210,22 @@ spec:
             "--chain-id", '{{.Values.chainId}}',
             "--strategy", "{{.Values.strategy}}",
             "--disable-conflict-transactions",
-            {{- with .Values.refererBeAddress }}
-              --referer-be-address={{ . }},
-            {{- end }}
+            {{ if .Values.cache.enabled }}
+            "--shared-state",
+            {{ with .Values.cache.backend }}
+            --cache-be={{ . }},
+            {{ end }}
+            {{ end }}
+            {{ with .Values.refererBeAddress }}
+            --referer-be-address={{ . }},
+            {{ end }}
             {{- if .Values.cors.enabled }}
             "--cors-headers", "{{ .Values.cors.headers | join "," }}",
             "--cors-origin", "{{ .Values.cors.origins | join "," }}",
             "--cors-methods", "{{ .Values.cors.methods | join "," }}",
             "--cdn-cache-duration", "{{ .Values.cors.maxAge }}",
             {{- end }}
+
             "--log_level", "{{ .Values.logLevel }}"
           ]
           {{- end }}
