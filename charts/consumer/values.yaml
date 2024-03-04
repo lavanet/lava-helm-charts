@@ -283,10 +283,10 @@ emptyDir:
 # resource limits for the node
 resources:
   requests:
-    cpu: "250m"
-    memory: 250Mi
+    cpu: "3000m"
+    memory: 12Gi
   limits:
-    memory: "2Gi"
+    memory: "16Gi"
 
 # override the start command to start the consumer
 command: null
