@@ -178,6 +178,7 @@ spec:
               "--disable-conflict-transactions"
               {{- if .Values.cache.enabled }}
               --cache-be {{ .Values.cache.backend }}
+              --shared-state
               {{- end }}
               {{- if .Values.cors.enabled }}
               --cors-headers {{ .Values.cors.headers | join "," }}
@@ -207,6 +208,10 @@ spec:
             "--chain-id", '{{.Values.chainId}}',
             "--strategy", "{{.Values.strategy}}",
             "--disable-conflict-transactions",
+            {{- if .Values.cache.enabled }}
+              --cache-be {{ .Values.cache.backend }}
+              --shared-state
+            {{- end }}
             {{- with .Values.refererBeAddress }}
               --referer-be-address={{ . }},
             {{- end }}
