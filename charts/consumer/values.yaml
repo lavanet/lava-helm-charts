@@ -283,7 +283,7 @@ emptyDir:
 # resource limits for the node
 resources:
   requests:
-    cpu: "3000m"
+    cpu: "5000m"
     memory: 12Gi
   limits:
     memory: "16Gi"
