@@ -18,7 +18,7 @@ rpcNodeUrl: null
 
 # use lavavisor or control versions directly with docker images
 # defaults true to use lavavisor
-lavavisor: true
+lavavisor: false
 
 # information about the private key to use for the node
 key:
