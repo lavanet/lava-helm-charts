@@ -19,10 +19,11 @@ def get_release_and_pre_release_tags() -> Tuple[List[str], List[str]]:
     # only build tags after 0.24
     tags = []
     for tag in raw_tags:
+        major = tag.replace("v", "").split(".")[0]
         minor = tag.replace("v", "").split(".")[1]
         minor_int = int(minor)
 
-        if minor_int >= 24:
+        if minor_int >= 24 or major > 0:
             tags.append(tag)
 
     releases = []

@@ -9,8 +9,9 @@ repository = 'lavanet-public/images'
 
 def split_tag(tag):
     # split with 0 as default value
-    tag.replace('prerelease-v', 'v')
-    tag_split = tag.split('.') + ["0", "0", "0"]
+    tag = tag.replace('prerelease-v', 'v')
+    tag_split = tag.split('.')
+    tag_split = [tag_split[0], "0", "0"]
 
     def safe_str_to_int(s, default=0):
         try:
