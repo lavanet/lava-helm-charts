@@ -3,6 +3,6 @@ name: lava-consumer
 description: Helm chart for launching a lava consumer
 
 type: application
-version: 0.3.0
+version: 1.0.4
 
 appVersion: "0.24.0"
