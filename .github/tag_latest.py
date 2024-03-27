@@ -46,7 +46,8 @@ def get_digest(tag, type: str):
     url = f'https://{registry_domain}/v2/{repository}/{type}/manifests/{tag}'
     headers = {
         'Accept': 'application/vnd.docker.distribution.manifest.v1+json, '
-                  'application/vnd.oci.image.index.v1+json'
+                  'application/vnd.docker.distribution.manifest.v2+json, '
+                  'application/vnd.oci.image.index.v1+json' 
     }
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -55,7 +56,7 @@ def get_digest(tag, type: str):
         raise Exception(f'Error fetching digest for tag {tag}: {response.content}')
 
 def get_latest_target(type: str) -> str:
-    result = subprocess.run(["./bin/lavad", "q", "protocol", "params", "--node", "https://public-rpc-testnet2.lavanet.xyz:443/rpc/", "--output", "--json"], capture_output=True, text=True)
+    result = subprocess.run(["./bin/lavad", "q", "protocol", "params", "--node", "https://testnet2-rpc.lavapro.xyz:443/rpc/", "--output", "--json"], capture_output=True, text=True)
     response = json.loads(result.stdout)
 
     if (type == "lava-consumer"):
