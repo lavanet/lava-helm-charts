@@ -160,20 +160,22 @@ spec:
             "{{ .Values.persistentVolume.mountPath }}",
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{ .Values.chainId }}",
-            "--log_level", "{{ .Values.logLevel }}"
+            "--log_level", "{{ .Values.logLevel }}",
+            "--metrics-listen-address", "0.0.0.0:{{ .Values.metrics.port }}"
           ]
           {{- else }}
           command: ["lavap"]
           args: [
-            "rpcprovider", "{{ $configFilePath }}", 
+            "rpcprovider", "{{ $configFilePath }}",
             "--from", "{{- include "provider.keyname" . }}",
-            "--home",  "{{ .Values.persistentVolume.mountPath }}", 
+            "--home",  "{{ .Values.persistentVolume.mountPath }}",
             "--keyring-backend", "test",
             "--keyring-dir",  "{{ .Values.persistentVolume.mountPath }}",
             "--geolocation", "{{.Values.geolocation}}",
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{.Values.chainId}}",
-            "--log_level", "{{ .Values.logLevel }}"
+            "--log_level", "{{ .Values.logLevel }}",
+            "--metrics-listen-address", "0.0.0.0:{{ .Values.metrics.port }}"
           ]
           {{- end }}
           {{- end }}
