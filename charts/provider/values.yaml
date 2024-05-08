@@ -5,6 +5,11 @@ logLevel: "warn"
 fullnameOverride: null
 nameOverride: null
 
+# REQUIRED: The external hostname for the provider
+## example
+# endpoint: "provider.lavanet.xyz"
+endpoint: ""
+
 # provider node moniker, will default to the fullname
 moniker: null
 
