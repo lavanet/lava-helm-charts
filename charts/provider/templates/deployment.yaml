@@ -132,6 +132,11 @@ spec:
             - name: {{ .Values.port.name }}
               containerPort: {{ .Values.port.number }}
               protocol: {{ .Values.port.protocol }}
+            {{ if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{ end }}
           {{- if .Values.command }}
           {{- with .Values.command.name }}
           command: 
