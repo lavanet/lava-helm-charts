@@ -161,7 +161,9 @@ spec:
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{ .Values.chainId }}",
             "--log_level", "{{ .Values.logLevel }}",
+            {{- if .Values.metrics.enabled }}
             "--metrics-listen-address", "0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
           ]
           {{- else }}
           command: ["lavap"]
@@ -175,7 +177,9 @@ spec:
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{.Values.chainId}}",
             "--log_level", "{{ .Values.logLevel }}",
+            {{- if .Values.metrics.enabled }}
             "--metrics-listen-address", "0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
           ]
           {{- end }}
           {{- end }}
