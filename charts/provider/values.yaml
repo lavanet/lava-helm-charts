@@ -143,6 +143,7 @@ port:
 
 # metrics port to expose the node on
 metrics:
+  enabled: true
   port: 2025
 
 # set service account name
