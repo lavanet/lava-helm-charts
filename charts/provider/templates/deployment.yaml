@@ -132,6 +132,11 @@ spec:
             - name: {{ .Values.port.name }}
               containerPort: {{ .Values.port.number }}
               protocol: {{ .Values.port.protocol }}
+            {{ if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{ end }}
           {{- if .Values.command }}
           {{- with .Values.command.name }}
           command: 
@@ -161,7 +166,9 @@ spec:
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{ .Values.chainId }}",
             "--log_level", "{{ .Values.logLevel }}",
+            {{- if .Values.metrics.enabled }}
             "--metrics-listen-address", "0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
           ]
           {{- else }}
           command: ["lavap"]
@@ -175,7 +182,9 @@ spec:
             "--node", "{{ $rpcNodeUrl }}",
             "--chain-id", "{{.Values.chainId}}",
             "--log_level", "{{ .Values.logLevel }}",
+            {{- if .Values.metrics.enabled }}
             "--metrics-listen-address", "0.0.0.0:{{ .Values.metrics.port }}"
+            {{- end }}
           ]
           {{- end }}
           {{- end }}

@@ -1,0 +1,23 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "provider.fullname"  . }}
+  labels:
+    lavanet.xyz/node_moniker:  {{ include "provider.moniker"  . }}
+    lavanet.xyz/node_type: "provider"
+    {{- include "provider.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      lavanet.xyz/node_moniker:  {{ include "provider.moniker"  . }}
+      lavanet.xyz/node_type: "provider"
+      {{- include "provider.labels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  endpoints:
+  - port: metrics
+    interval: {{ .Values.serviceMonitor.interval }}
+    path: {{ .Values.serviceMonitor.path }}
+{{- end }}
