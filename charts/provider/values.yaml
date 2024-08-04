@@ -5,6 +5,11 @@ logLevel: "warn"
 fullnameOverride: null
 nameOverride: null
 
+# REQUIRED: The external hostname for the provider
+## example
+# endpoint: "provider.lavanet.xyz"
+endpoint: ""
+
 # provider node moniker, will default to the fullname
 moniker: null
 
@@ -138,7 +143,14 @@ port:
 
 # metrics port to expose the node on
 metrics:
+  enabled: true
   port: 2025
+
+# enable service monitor for prometheus
+serviceMonitor:
+  enabled: false
+  interval: 15s
+  path: /metrics
 
 # set service account name
 serviceAccountName: null

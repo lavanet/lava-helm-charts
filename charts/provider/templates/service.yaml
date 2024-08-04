@@ -27,6 +27,12 @@ spec:
       port: {{ .Values.port.number }}
       protocol: {{ .Values.port.protocol }}
       targetPort: {{ .Values.port.name }}
+    {{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      protocol: TCP
+      targetPort: metrics
+    {{- end }}
   {{- end }}
   selector:
     lavanet.xyz/node_moniker:  {{ include "provider.moniker"  . }}
